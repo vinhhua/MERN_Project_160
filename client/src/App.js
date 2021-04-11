@@ -1,8 +1,7 @@
 import React from 'react';
 import LoginForm from './components/Form/LoginForm';
-import SignUpForm from './components/Form/SignUpForm';
+import RegisterForm from './components/Form/RegisterForm';
 import './App.css';
-import './index.css'
 import {
   BrowserRouter as Router,
   Switch,
@@ -61,7 +60,7 @@ function Home() {
   
   function Register() {
     return <h2>
-        <SignUpForm />
+        <RegisterForm />
     </h2>;
   }
 
