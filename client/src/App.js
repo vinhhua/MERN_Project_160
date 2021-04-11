@@ -1,6 +1,7 @@
 import React from 'react';
 import LoginForm from './components/Form/LoginForm';
 import RegisterForm from './components/Form/RegisterForm';
+import ForgotPasswordForm from './components/Form/ForgotPasswordForm';
 import './App.css';
 import {
   BrowserRouter as Router,
@@ -36,6 +37,9 @@ const App = () => {
               <Route path="/register">
                 <Register />
               </Route>
+              <Route path="/forgotpassword">
+                <ForgotPassword />
+              </Route>
               <Route path="/home">
                 <Home />
               </Route>
@@ -62,6 +66,10 @@ function Home() {
     return <h2>
         <RegisterForm />
     </h2>;
+  }
+
+  function ForgotPassword() {
+    return <ForgotPasswordForm />
   }
 
 export default App;
