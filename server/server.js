@@ -3,7 +3,6 @@ const express = require("express");
 const app = express();
 const connectDB = require("./config/db");
 const errorHandler = require("./middleware/error");
-
 connectDB();
 
 app.use(express.json());
@@ -13,8 +12,8 @@ app.get("/", (req, res, next) => {
 });
 
 // Connecting Routes
-app.use("/api/auth", require("./routes/auth"));
-app.use("/api/private", require("./routes/private"));
+app.use("api/auth", require("./routes/auth"))
+// app.use("api/private", require("./routes/private"))
 
 // Error Handler Middleware
 app.use(errorHandler);
