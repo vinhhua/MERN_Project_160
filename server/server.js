@@ -3,6 +3,8 @@ const express = require("express");
 const app = express();
 const connectDB = require("./config/db");
 const errorHandler = require("./middleware/error");
+const authRouter = require("./routes/auth")
+const privateAccessRouter = require("./routes/private")
 connectDB();
 
 app.use(express.json());
@@ -12,8 +14,8 @@ app.get("/", (req, res, next) => {
 });
 
 // Connecting Routes
-app.use("api/auth", require("./routes/auth"))
-// app.use("api/private", require("./routes/private"))
+app.use("/api/auth", authRouter);
+app.use("/api/private", privateAccessRouter);
 
 // Error Handler Middleware
 app.use(errorHandler);
@@ -21,7 +23,7 @@ app.use(errorHandler);
 const PORT = process.env.PORT || 5000;
 
 const server = app.listen(PORT, () =>
-  console.log(`Sever running on port ${PORT}`)
+  console.log(`Server running on port ${PORT}`)
 );
 
 process.on("unhandledRejection", (err, promise) => {
