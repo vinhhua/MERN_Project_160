@@ -36,7 +36,7 @@ const LoginForm = ({ history }) => {
     } catch (error) {
       setError(error.response.data.error);
       setTimeout(() => {
-        setError("");
+        setError("Some error occured");
       }, 5000);
     }
   };
