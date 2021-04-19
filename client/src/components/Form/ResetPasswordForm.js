@@ -24,7 +24,7 @@ const ResetPasswordForm = ({ history, match }) => {
       setTimeout(() => {
         setError("");
       }, 5000);
-      return setError("Passwords don't match");
+      return setError("Passwords do not match");
     }
 
     try {
