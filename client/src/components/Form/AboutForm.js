@@ -10,7 +10,7 @@ const AboutForm = () => {
         height: '90vh'
       }}
     >
-      <h1>About</h1>
+      <h1>This full web application helps you track your spendings, etc... 🤝 </h1>
     </div>
   );
 };
