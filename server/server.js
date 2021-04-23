@@ -5,9 +5,12 @@ const connectDB = require("./config/db");
 const errorHandler = require("./middleware/error");
 const authRouter = require("./routes/auth")
 const privateAccessRouter = require("./routes/private")
+const spendRouter = require("./routes/spend") //  add spending
+const cors = require("cors");
 connectDB();
 
 app.use(express.json());
+app.use(cors());
 
 app.get("/", (req, res, next) => {
   res.send("Api running");
@@ -16,6 +19,7 @@ app.get("/", (req, res, next) => {
 // Connecting Routes
 app.use("/api/auth", authRouter);
 app.use("/api/private", privateAccessRouter);
+app.use("/spend", spendRouter);
 
 // Error Handler Middleware
 app.use(errorHandler);
