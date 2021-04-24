@@ -1,6 +1,6 @@
-import { Container, AppBar, Typography, Grow, Grid } from '@material-ui/core';  //  import unique style
-import '../../App.css'
-import { makeStyles } from '@material-ui/core/styles';  //  importing style
+//  imports
+import { Container, AppBar, Typography, Grow, Grid } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
 import React, { useEffect, useState } from 'react';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -10,12 +10,17 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import IconButton from '@material-ui/core/IconButton';
-import DeleteIcon from '@material-ui/icons/Delete';
-import axios from 'axios';
+import DeleteIcon from '@material-ui/icons/Close';
+import EditIcon from '@material-ui/icons/Edit';
 import TextField from '@material-ui/core/TextField';
+import Button from '@material-ui/core/Button';
+import axios from 'axios';
+import '../../App.css'
 //import TextareaAutosize from '@material-ui/core/TextareaAutosize';
 //import InputLabel from '@material-ui/core/InputLabel';
-import Button from '@material-ui/core/Button';
+
+//  url for axios
+const url = 'http://localhost:5000/spend-data';
 
 //  show table
 const Show = () => {
@@ -26,18 +31,26 @@ const Show = () => {
     },
   });
 
-  //list database info
-  const [transactionList, setTransactionList] = useState([]);
+  
+  //  local storage variables
+  const [transactionList, setTransactionList] = useState([]);   //  empty list to hold transactions
+  const [currentId, setCurrentId] = useState(null);       //  null id default
 
+  //  list all transactions into list using useEffect()
   useEffect(() => {
-    axios.get('http://localhost:5000/spend').then((allTransactions) => 
+    axios.get(url).then((allTransactions) => 
     setTransactionList(allTransactions.data))
   }, [])
 
+  //  create event deletion handler
+  //  const handleDelete = (e) => {}
+
    //  axios deletion client side - no reload
-  const deleteTransaction = (id) => { axios.delete(`http://localhost:5000/spend/${id}`).then(
+  const deleteTransaction = (id) => { axios.delete(`${url}/${id}`).then(
     () => { window.location.reload(false); })
   }
+
+  const editTransaction = (id) => { }
 
   return (
     <>
@@ -50,7 +63,8 @@ const Show = () => {
             <TableCell align="center">Amount</TableCell>
             <TableCell align="center">Description</TableCell>
             <TableCell align="center">Date</TableCell>
-            <TableCell align="center">Action</TableCell>
+            <TableCell align="center"></TableCell>
+            <TableCell align="center"></TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -60,13 +74,17 @@ const Show = () => {
                 {t.name}
               </TableCell>
               <TableCell align="center">$ {t.amount}</TableCell>
-              <TableCell align="center" variant="body">{t.descript}</TableCell>
+              <TableCell align="center">{t.descript}</TableCell>
               <TableCell align="center">{t.date}</TableCell>
               <TableCell align="center">
-              <IconButton aria-label="delete" className={classes.margin} onClick={ () => deleteTransaction(t._id)}>
-                <DeleteIcon />
-              </IconButton>
-
+                <IconButton aria-label="edit" className={classes.margin}>
+                  <EditIcon />
+                </IconButton>
+              </TableCell>
+              <TableCell align="center">
+                <IconButton aria-label="delete" className={classes.margin} onClick={ () => deleteTransaction(t._id)}>
+                  <DeleteIcon />
+                </IconButton>
               </TableCell>
             </TableRow>
           ))}
@@ -90,7 +108,7 @@ const Create = () => {
     },
   }));
 
-  //    react hook: updates data in fields for front-end
+  //  react hook: updates data in fields for front-end
   const [tData, setTransaction] = useState({
       name: 'Bot',
       amount: 9999.99,
@@ -98,22 +116,30 @@ const Create = () => {
       date: '04/22/21',
   });
 
-  //    create student from click at database
-  const createTransaction = () => { axios.post('http://localhost:5000/spend', tData).then(() => { window.location.reload(false); })}
+  //  create event handler for spend creation
+  const createTransaction = () => axios.post(url, tData).then( () => { window.location.reload(false); });  
+
+  //  handler for editing...
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+
+    setTransaction(prevTransaction => {
+      return {
+        ...prevTransaction,
+        [name]: value
+      }
+    })
+  }
 
   return (
     <>
     <h2>Create Transaction</h2>  
     <form className={classes.root} noValidate autoComplete="off">
-      <TextField id="outlined-basic" label="Name" variant="outlined" value={tData.name}
-      onChange={(event) => setTransaction({...tData, name: event.target.value})}/>
-      <TextField id="outlined-basic" label="Amount" variant="outlined" value={tData.amount}
-      onChange={(event) => setTransaction({...tData, amount: event.target.value})}/>
-      <TextField id="outlined-basic" label="Description" variant="outlined" value={tData.descript} 
-      onChange={(event) => setTransaction({...tData, descript: event.target.value})}/>
-      <TextField id="outlined-basic" label="Date" variant="outlined" value={tData.date}
-      onChange={(event) => setTransaction({...tData, date: event.target.value})}/>
-      <Button variant="contained" color="secondary" onClick={createTransaction}> Add </Button>
+      <TextField id="outlined-basic" name="name" label="Name" variant="outlined" value={tData.name} onChange={handleChange}/>
+      <TextField id="outlined-basic" name="amount" label="Amount" variant="outlined" value={tData.amount} onChange={handleChange}/>
+      <TextField id="outlined-basic" name="descript" label="Description" variant="outlined" value={tData.descript} onChange={handleChange}/>
+      <TextField id="outlined-basic" name="date" label="Date" variant="outlined" value={tData.date}onChange={handleChange}/>
+      <Button variant="contained" color="secondary" onClick={createTransaction} > Add </Button>
     </form>
     </>
   )

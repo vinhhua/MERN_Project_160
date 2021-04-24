@@ -1,17 +1,26 @@
-//  import express from 'express';
-const express = require("express");
-//  import { getTransaction, createTransaction, deleteTransaction } from '../controllers/spend.js';    //  import functions
-//  import spend from '../models/spend.js';
-const func = require("../controllers/spend");
+/*
+  Spending Route
 
-//  router object instantiation
+*/
+
+//  acquire router
+const express = require("express");
 const router = express.Router();
 
-//  set up routers (PATH/CALLBACK FUNCTION (request/response))
-router.get('/', func.getTransaction);
-router.post('/', func.createTransaction);   
-router.delete('/:id', func.deleteTransaction);
+//  acquire Spending controller functions
+const { 
+    getTransaction, 
+    createTransaction, 
+    deleteTransaction,
+    updateTransaction 
+} = require("../controllers/spend");
 
-//  export router
-//export default router;
+
+//  set-up router: GET, POST, DELETE, & UPDATE
+router.get('/', getTransaction);
+router.post('/', createTransaction);   
+router.delete('/:id', deleteTransaction);
+router.patch('/:id', updateTransaction)
+
+//  export default router
 module.exports = router;
