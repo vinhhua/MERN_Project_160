@@ -1,24 +1,23 @@
-//  import mongoose from 'mongoose';
+/*
+    Spending Model
+
+*/
+
+//  acquire mongoose
 const mongoose = require("mongoose");
 
-//  create instance of schema (data types)
-const transactionSchema = mongoose.Schema({
+//  schema creation: name (String), amount (Number), descript (String), date (String)
+const spendSchema = mongoose.Schema({
     name: String,
     amount: Number,
     descript: String,
     date: String
-    /*{
-        type: String,
-        default: ' '
-    },   //  default
-    subjects: [String]  //  array
-    */
 }); 
 
-//  create models
-const spend = mongoose.model('transaction', transactionSchema);
+//  create framework model
+const SpendData = mongoose.model('spendings', spendSchema);
 
-//  export default spend;
-module.exports = spend;
+//  export default spend
+module.exports = SpendData;
 
 
