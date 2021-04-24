@@ -19,7 +19,7 @@ app.get("/", (req, res, next) => {
 // Connecting Routes
 app.use("/api/auth", authRouter);
 app.use("/api/private", privateAccessRouter);
-app.use("/spend", spendRouter);
+app.use("/spend-data", spendRouter);
 
 // Error Handler Middleware
 app.use(errorHandler);
