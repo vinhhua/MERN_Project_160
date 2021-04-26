@@ -72,9 +72,9 @@ exports.forgotPassword = async (req, res, next) => {
 
     // HTML Message
     const message = `
-      <h1>You have requested a password reset</h1>
-      <p>Please make a put request to the following link:</p>
+      <h1>A request has been made to change/ recover password for your account</h1>
       <a href=${resetUrl} clicktracking=off>${resetUrl}</a>
+      <p>If you did not initiate this request, simply ignore this message at this time!</p>
     `;
 
     try {
