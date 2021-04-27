@@ -15,7 +15,6 @@ import ContactForm from "./components/Form/ContactForm";
 import SpendingForm from "./components/Form/SpendingForm"
 import "./App.css";
 import { LandingPage } from "./components/Form/LandingPage";
-import Navbar from "./components/Navbar";
 
 const App = () => {
   return (
@@ -23,7 +22,7 @@ const App = () => {
       <div className="app">
         <Switch>
           {/* <PrivateRoute exact path="/" component={LoggedInForm} /> */}
-          <Route exact path="/" component={Navbar} />
+          <Route exact path="/" component={LandingPage} />
           <Route exact path="/login" component={LoginForm} />
           <Route exact path="/register" component={RegisterForm} />
           <Route exact path="/about" component={AboutForm} />

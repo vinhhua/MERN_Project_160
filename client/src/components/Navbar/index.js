@@ -26,8 +26,11 @@ const Navbar = () => {
                     <NavLink to="/contact-us" activeStyle>
                         <h1>Contact Us</h1>
                     </NavLink>
+                    <NavLink to="/spending" activeStyle>
+                        <h1>Spending</h1>
+                    </NavLink>
                     <NavLink to="/register" activeStyle>
-                        Sign Up
+                        <h1>Sign Up</h1>
                     </NavLink>
                 </NavMenu>
                 <NavBtn>
