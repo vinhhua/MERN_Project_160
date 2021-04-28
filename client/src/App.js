@@ -16,6 +16,17 @@ import SpendingForm from "./components/Form/SpendingForm"
 import "./App.css";
 import { LandingPage } from "./components/Form/LandingPage";
 
+//  REDUX!
+import { Provider } from 'react-redux';   //  keep track of store
+import { createStore, applyMiddleware, compose } from 'redux';
+import thunk from 'redux-thunk';
+
+//  
+import reducers from './reducers';
+
+//  global storage
+const store = createStore(reducers, compose(applyMiddleware(thunk)));
+
 const App = () => {
   return (
     <Router>
@@ -28,7 +39,9 @@ const App = () => {
           <Route exact path="/about" component={AboutForm} />
           <Route exact path="/services" component={ServicesForm} />
           <Route exact path="/contact-us" component={ContactForm} />
-          <Route exact path="/spending" component={SpendingForm} />
+          <Provider store={store}>
+            <Route exact path="/spending" component={SpendingForm}/>
+          </Provider>
           <Route
             exact
             path="/forgotpassword"

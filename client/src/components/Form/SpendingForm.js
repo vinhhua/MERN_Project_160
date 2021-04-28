@@ -1,117 +1,104 @@
-//  import styles
+//  import from material-ui
 import { Container, AppBar, Typography, Grow, Grid, Paper,
   Table, TableBody,TableCell, TableContainer, TableHead, TableRow, TextField,
-  IconButton, Button, makeStyles } from '@material-ui/core';
+  IconButton, Button, CircularProgress 
+} from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Close';
 import EditIcon from '@material-ui/icons/Edit';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
-import { green, red } from '@material-ui/core/colors';
 import DateFnsUtils from '@date-io/date-fns';
+import Moment from 'react-moment';
+import { DataGrid } from '@material-ui/data-grid';
 
-import '../../styles/SpendingForm.css';
+//  import styles & imagery
+import mainStyle from '../../styles/spending/main';
+import formStyle from '../../styles/spending/form';
+import showStyle from '../../styles/spending/show';
+import logo from '../images/spend-logo.png';
+
+//  import main components, functions
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import { useDispatch, useSelector } from 'react-redux';
+import { getData, createData, editData, deleteData } from '../../actions/spend';
 
-//  url for axios
-const url = 'http://localhost:5000/spend-data';
 
 //------------------------------------------------------
 const SpendingForm = () => {
-  const classes = makeStyles(() => ({
-    //  assign styles to tag names in App.js
-    appBar: {
-        borderRadius: 15, 
-        margin: '30px 0',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center'
-    }})
-  );
+  const classes = mainStyle();
+  const dispatch = useDispatch();
 
-  //  null id default
   const [currentId, setCurrentId] = useState(null);
 
-  //  local storage variables
-  const [transactionList, setTransactionList] = useState([]);   //  empty list to hold transactions
-
-  //  list all transactions into list using useEffect()
   useEffect(() => {
-    axios.get(url).then((allTransactions) => 
-    setTransactionList(allTransactions.data))
-  }, [])
-  
+    dispatch(getData())
+  }, [currentId, dispatch]);
 
   return (
-    <div className="spending">
-        <Container maxWidth="lg">
-          <AppBar className={classes.appBar} position="static" color="inherit">
-            <Typography className={classes.heading} variant="h2" align="center">
-              Spending Page
-            </Typography>
-          </AppBar>
+    <Container maxWidth="lg">
+      <AppBar className={classes.appBar} position="static" color="inherit">
+        <Typography className={classes.heading} variant="h2" align="center">
+          Spendings
+        </Typography>
+        <img className={classes.image} src={logo} alt="logo" height="60"></img>
+      </AppBar>
 
-          <Grow in>
-            <Container>
-              <Grid container justify="space-between" align="center" alignItems="stretch">
-                <Grid item xs={12} sm={7}>
-                  <AppBar className={classes.appBar} position="static" color="inherit">
-                    <Show currentId={currentId} setCurrentId={setCurrentId} transactionList={transactionList}/>
-                  </AppBar>
-                </Grid>
+      <Grow in>
+        <Container>
+          <Grid container justify="space-between" align="center" alignItems="stretch" spacing={3}>
+            <Grid item xs={12} sm={7}>
+              <Show setCurrentId={setCurrentId}/>
+            </Grid>
 
-                <Grid item xs={12} sm={4}>
-                <AppBar className={classes.appBar} position="static" color="inherit">
-                  <Form currentId={currentId} setCurrentId={setCurrentId} transactionList={transactionList}/>
-                </AppBar>
-                </Grid>
-              </Grid>
-            </Container>
-          </Grow>
+            <Grid item xs={12} sm={4}>
+              <Form currentId={currentId} setCurrentId={setCurrentId}/>
+            </Grid>
+          </Grid>
         </Container>
-    </div>
+      </Grow>
+    </Container>
   );
 }
 
 //-------------------------------------------------------
 
 //  create/edit a transaction
-const Form = ({currentId, setCurrentId, transactionList}) => {
-  const classes = makeStyles((theme) => ({
-    root: {
-      margin: theme.spacing(1),
-      width: '25ch',
-    },
-  }));
+const Form = ({currentId, setCurrentId}) => {
+  const classes = formStyle();
+  const spending = useSelector((state) => currentId ? state.spendings.find((s) => s._id === currentId) : null);
+  const dispatch = useDispatch();
 
   //  react hook: updates data in fields for front-end
   const [tData, setTransaction] = useState({
     name: ' ',
-    amount: 99.99,
+    amount: 0.01,
     descript:  ' ',
-    date: Date.now()
+    date: new Date()
   });
+
+  useEffect(() => {
+    if(spending) setTransaction(spending);
+  }, [spending])
 
   //  clear input
   const clear = (event) => {
     setCurrentId(null);   //  erase currentId
-    setTransaction({name: ' ',
-    amount: 99.99,
+    setTransaction({
+    name: ' ',
+    amount: 0,
     descript:  ' ',
-    date: Date.now()});
+    date: new Date()})
   }
 
   //  create event handler for spend creation
-  const handleSubmit = (id) => {
-    //  if id is not empty
-    if(currentId) { 
-      //  patch data @ id
-      axios.patch(`${url}/${id}`, tData).then( () => { window.location.reload(false); });
-    }
-    else {
-      //  otherwise, just post
-      axios.post(url, tData).then( () => { window.location.reload(false); });
-    }
+  const handleSubmit = (e) => {
+    //  prevent refresh
+    e.preventDefault();
+
+    //  if id is not empty, patch. otherwise, post
+    if(currentId) { dispatch(editData(currentId, tData)); }
+    else { dispatch(createData(tData)); }
+
+    clear();
   }
 
   //  handler for editing...
@@ -127,104 +114,120 @@ const Form = ({currentId, setCurrentId, transactionList}) => {
 
   }
 
-  //  date selection
-  const [selectedDate, setSelectedDate] = useState(new Date());
-  const handleDateChange = (date) => {
-    setSelectedDate(date);
-  };
-  
-
   return (
     <>
-    <h2>{currentId ? 'Edit Transaction' : 'Create Transaction'}</h2>  
-    <form className={classes.root} noValidate autoComplete="off">
-      <TextField id="outlined-basic" name="name" label="Name" variant="outlined" value={tData.name} onChange={handleChange}/>
-      <TextField id="outlined-basic" name="amount" label="Amount" variant="outlined" value={tData.amount} onChange={handleChange}/>
-      <TextField id="outlined-basic" name="descript" label="Description" variant="outlined" value={tData.descript} onChange={handleChange}/>
-      <MuiPickersUtilsProvider utils={DateFnsUtils}>
-        <KeyboardDatePicker
-            disableToolbar
-            
-            name="date"
-            variant="inline"
-            format="MM/dd/yyyy"
-            margin="normal"
-            id="date-picker-inline"
-            label="Date picker inline"
-            value={tData.date}
-            onChange={handleDateChange}
-            KeyboardButtonProps={{
-              'aria-label': 'change date',
+    <Paper className={classes.paper}>
+      <form className={`${classes.root} ${classes.form}`} noValidate autoComplete="off" onSubmit={handleSubmit}>
+        <Typography variant="h6">{ currentId ? 'EDIT TRANSACTION' : 'CREATE TRANSACTION' }</Typography>
+        <TextField className={classes.field} name="name" label="Name" variant="outlined" value={tData.name} fullWidth onChange={handleChange}/>
+        <TextField className={classes.field} name="amount" label="Amount" variant="outlined" value={tData.amount} fullWidth onChange={handleChange}/>
+        <TextField className={classes.field} name="descript" label="Description" variant="outlined" value={tData.descript} fullWidth onChange={handleChange}/>
+        <MuiPickersUtilsProvider utils={DateFnsUtils}>
+          <KeyboardDatePicker disableToolbar name="date" variant="inline" format="MM/dd/yyyy" margin="normal" id="date-picker-inline"
+              label="Date picker inline"
+              value={tData.date}
+              onChange={(event) => setTransaction({...tData, date: new Date(event)})}
+              KeyboardButtonProps={{
+                'aria-label': 'change date',
+              }
             }
-          }
-        />
-      </MuiPickersUtilsProvider>
-      <Button variant="contained" color="primary" onClick={() => handleSubmit(currentId)}>{currentId ? 'Edit' : 'Add'} </Button>
-      <Button variant="contained" color="secondary" onClick={clear}>{currentId ? 'Cancel' : 'Clear'} </Button>
-    </form>
+          />
+        </MuiPickersUtilsProvider>
+        <Button className={classes.field} variant="contained" color="primary" size="large" type="submit" fullWidth>
+          {currentId ? 'Edit' : 'Add'} 
+        </Button>
+        <Button variant="contained" color="secondary" size="small" fullWidth onClick={clear}>{currentId ? 'Cancel' : 'Clear'}</Button>
+      </form>
+    </Paper>
     </>
-  )
+  );
 }
 
 //  show table
-const Show = ({currentId, setCurrentId, transactionList}) => {
-  //  styling
-  const classes = makeStyles({
-    table: {
-      minWidth: 650,
-    },
-  });
+const Show = ({setCurrentId}) => {
+  const classes = showStyle();
+  const dispatch = useDispatch();
+  const spendings = useSelector( (state) => state.spendings );
+  console.log(spendings);
 
-  //  create event deletion handler
-  //  const handleDelete = (e) => {}
+  //  map to array, find amounts
+  const amount = spendings.map((s)=>s.amount);
 
-   //  axios deletion client side - no reload
-  const deleteTransaction = (id) => { axios.delete(`${url}/${id}`).then(
-    () => { window.location.reload(false); })
-  }
+  //  total 
+  const total = amount.reduce((acc, item) => (acc += item), 0).toFixed(2);
+  const expense = Math.abs((amount.filter(item => item < 0).reduce((acc, item) => (acc += item), 0))).toFixed(2);
+  const income = amount.filter(item => item > 0).reduce((acc, item) => (acc += item), 0).toFixed(2);
 
-  //  const edit = currentId ? transactionList.find(t => t._id === currentId) : null;
+  //  DataGrid columns
+  const columns = [
+    { field: '_id', headerName: 'ID', width: 70 },
+    { field: 'name', headerName: 'Transaction', width: 130 },
+    { field: 'amount', headerName: 'Amount', width: 130 },
+    { field: 'descript', headerName: 'Description', width: 130 },
+    { field: 'date', headerName: 'Date', width: 130 },
+  ];
 
   return (
-    <>
-    <h2>Spending Table</h2>
-    <TableContainer component={Paper}>
-      <Table className={classes.table} aria-label="simple table">
+    !spendings.length ? <CircularProgress /> : (
+      <TableContainer component={Paper}>
+        <Table styles={{ padding: '20px' }} className={classes.table} aria-label="simple table">
         <TableHead>
-          <TableRow>
-            <TableCell>Transaction</TableCell>
-            <TableCell align="center">Amount</TableCell>
-            <TableCell align="center">Description</TableCell>
-            <TableCell align="center">Date</TableCell>
-            <TableCell align="center"></TableCell>
-            <TableCell align="center"></TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {transactionList.map((t, key) => (
-            <TableRow key={key}>
-              <TableCell component="th" scope="row">
-                {t.name}
-              </TableCell>
-              <TableCell align="center">$ {t.amount}</TableCell>
-              <TableCell align="center">{t.descript}</TableCell>
-              <TableCell align="center">{t.date}</TableCell>
-              <TableCell align="center">
-                <IconButton aria-label="edit" style={{color: currentId ? green[500] : red[500]}} className={classes.margin} onClick={() => setCurrentId(t._id)}>
-                  <EditIcon />
-                </IconButton>
-              </TableCell>
-              <TableCell align="center">
-                <IconButton aria-label="delete" className={classes.margin} onClick={ () => deleteTransaction(t._id)}>
-                  <DeleteIcon />
-                </IconButton>
-              </TableCell>
+            <TableRow variant="h2">
+              <TableCell align="center">INCOME</TableCell>
+              <TableCell align="center">TOTAL FUNDS</TableCell>
+              <TableCell align="center">EXPENSE</TableCell>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
-    </>
+          </TableHead>
+          <TableBody>
+            <TableRow>
+              <TableCell className={classes.inc} align="center">+ $ {income}</TableCell>
+              <TableCell align="center">{ total > 0 ? '$'+`${total}` : '- $ '+`${Math.abs(total).toFixed(2)}` }</TableCell>
+              <TableCell className={classes.exp} align="center">- $ {expense}</TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
+
+        <div style={{ height: 400, width: '100%', marginTop: 40 }}>
+          <DataGrid columns={columns} pageSize={5} rows={spendings} getRowId={(row) => row._id} checkboxSelection 
+          onRowSelected={(event) => dispatch(deleteData(event.data._id))}/>
+        </div>
+
+        <Table className={classes.table} aria-label="simple table">
+          <TableHead>
+            <TableRow>
+              <TableCell>Transaction</TableCell>
+              <TableCell align="center">Amount</TableCell>
+              <TableCell align="center">Description</TableCell>
+              <TableCell align="center">Date</TableCell>
+              <TableCell align="center"></TableCell>
+              <TableCell align="center"></TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {spendings.map((s) => (
+              <TableRow key={s._id} style={{backgroundColor: s.amount > 0 ? "#00ff0080" : "#ff000080" }} hover={true}>
+                <TableCell component="th" scope="row">{s.name}</TableCell>
+                <TableCell color="#00ff0080" align="center">$ {s.amount}</TableCell>
+                <TableCell align="center">{s.descript}</TableCell>
+                <TableCell align="center">
+                  <Moment format="MM/DD/YYYY">{s.date}</Moment>
+                </TableCell>
+                <TableCell align="center">
+                  <IconButton aria-label="edit" className={classes.margin} onClick={() => setCurrentId(s._id)}>
+                    <EditIcon />
+                  </IconButton>
+                </TableCell>
+                <TableCell align="center">
+                  <IconButton aria-label="delete" className={classes.margin} onClick={ () => dispatch(deleteData(s._id))}>
+                    <DeleteIcon />
+                  </IconButton>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    )
   );
 }
 
