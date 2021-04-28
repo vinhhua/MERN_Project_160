@@ -27,21 +27,17 @@ exports.createTransaction = async(req, res) => {
     } catch (error) {
         res.status(409).json({message: error.message});
     }
-
-    
 }
 
 //  delete a Transaction
 exports.deleteTransaction = async(req, res) => {
     const transactionId = req.params.id;       //  acquire data id for deletion
 
-    try {
-        await SpendData.findByIdAndRemove(transactionId).exec();
-        res.status(202).json(transactionId);
-    }    
-    catch (error) {
-        console.log(error);
-    }
+    //  check if id exists...exit and return error status if not
+    if(!mongoose.Types.ObjectId.isValid(transactionId)) return res.status(404).json('._id does not exist');
+
+    await SpendData.findByIdAndRemove(transactionId).exec();
+    res.json({message: `${transactionId} deleted successfully`}); 
 }
 
 //  update a Transaction
@@ -49,12 +45,12 @@ exports.updateTransaction = async(req, res) => {
     const transactionId = req.params.id;       //  acquire id
 
     //  check if id exists...exit and return error status if not
-    if(!mongoose.Types.ObjectId.isValid(transactionId)) return res.status(404).json('Does not exist');
+    if(!mongoose.Types.ObjectId.isValid(transactionId)) return res.status(404).json('._id does not exist');
 
     const transactionInfo = req.body;   //  acquire transaction information
     const transactionUpdate = await SpendData.findByIdAndUpdate(
-        id, TransactionInfo, { new: true }
-    );      //  prep update
+        transactionId, { ...transactionInfo, transactionId }, { new: true }   
+    );      //  prep update along w/ id
 
-    res.json(transactionUpdate);
+    res.json({message: `${transactionUpdate} updated`});
 }

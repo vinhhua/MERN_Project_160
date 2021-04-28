@@ -12,7 +12,7 @@ const {
     getTransaction, 
     createTransaction, 
     deleteTransaction,
-    updateTransaction 
+    updateTransaction, 
 } = require("../controllers/spend");
 
 
@@ -20,7 +20,7 @@ const {
 router.get('/', getTransaction);
 router.post('/', createTransaction);   
 router.delete('/:id', deleteTransaction);
-router.patch('/:id', updateTransaction)
+router.patch('/:id', updateTransaction);
 
 //  export default router
 module.exports = router;

@@ -11,7 +11,10 @@ const spendSchema = mongoose.Schema({
     name: String,
     amount: Number,
     descript: String,
-    date: Date
+    date: {
+        type: Date,
+        default: new Date()
+    }
 }); 
 
 //  create framework model
