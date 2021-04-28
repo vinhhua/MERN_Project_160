@@ -6,8 +6,9 @@ const ContactForm = () => {
       <html>
           <head>
               <title>Contact Us Page</title>
-              <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/fontawesome.min.css" integrity="sha384-wESLQ85D6gbsF459vf1CiZ2+rr+CsxRY0RpiF1tLlQpDnAgg6rwdsUF1+Ics2bni" crossorigin="anonymous"></link>
+              <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"></link>
               <link rel="stylesheet" type="text/css" href="ContactForm.css"></link>
+              <script src="https://kit.fontawesome.com/400474ca63.js" crossorigin="anonymous"></script>
           </head>
           <body>
               <section class="contact">
@@ -18,30 +19,30 @@ const ContactForm = () => {
                   <div class="container">
                       <div class="contactInfo">
                           <div class="box">
-                              <div class="icon"></div>
+                              <div class="icon"><i class="fas fa-map-marker-alt"></i></div>
                               <div class="text">
                                   <h3>Address</h3>
-                                  <p>1 Washington Square, San Jose, California,95112</p>
+                                  <p>1 Washington Square,<br />San Jose, California,<br />95112</p>
                               </div>
                           </div>
                          <div class="box">
-                              <div class="icon"></div>
+                              <div class="icon"><i class="fas fa-phone"></i></div>
                               <div class="text">
                                   <h3>Phone</h3>
                                   <p>678-999-8212</p>
                               </div>
                           </div>
                           <div class="box">
-                              <div class="icon"></div>
+                              <div class="icon"><i class="fas fa-at"></i></div>
                               <div class="text">
                                   <h3>Email</h3>
-                                  <p>team12@sjsu.edu</p>
+                                  <p>CS160team11@sjsu.edu</p>
                               </div>
                           </div>
                       </div>
                       <div class="contactForm">
                         <form>
-                          <h2>Send Message</h2>
+                          <h2>Send Us A Message</h2>
                           <div class="inputBox">
                             <input type="text" name="" required="required"></input>
                             <span>Full Name</span>
