@@ -17,10 +17,11 @@ import showStyle from '../../styles/spending/show';
 import logo from '../images/spend-logo.png';
 
 //  import main components, functions
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, Component } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getData, createData, editData, deleteData } from '../../actions/spend';
 
+import { Bar, Line, Pie } from 'react-chartjs-2';
 
 //------------------------------------------------------
 const SpendingForm = () => {
@@ -33,6 +34,40 @@ const SpendingForm = () => {
     dispatch(getData())
   }, [currentId, dispatch]);
 
+  const spendings = useSelector( (state) => state.spendings );
+  const amount = spendings.map((s)=>s.amount);
+  const labels = spendings.map((s)=>s._name);
+
+  console.log(spendings);
+
+    //  class chart
+  class Chart extends Component {
+    //  constructor
+    constructor(props) {
+      super(props);
+      this.state = {
+        chartData: {
+          labels: labels,
+          datasets:[
+            {
+              label: 'Spendings',
+              data: amount,
+            }
+          ]
+        }
+      }
+    }
+
+    //  required call
+    render() {
+      return (
+        <div className="chart">
+          <Line data={this.state.chartData} options={{ maintainAspectRatio: false}}/>
+        </div>
+      )
+    }
+  }
+
   return (
     <Container maxWidth="lg">
       <AppBar className={classes.appBar} position="static" color="inherit">
@@ -41,12 +76,12 @@ const SpendingForm = () => {
         </Typography>
         <img className={classes.image} src={logo} alt="logo" height="60"></img>
       </AppBar>
-
+      <Chart />
       <Grow in>
         <Container>
           <Grid container justify="space-between" align="center" alignItems="stretch" spacing={3}>
             <Grid item xs={12} sm={7}>
-              <Show setCurrentId={setCurrentId}/>
+              <Show spendings={spendings}setCurrentId={setCurrentId}/>
             </Grid>
 
             <Grid item xs={12} sm={4}>
@@ -144,13 +179,10 @@ const Form = ({currentId, setCurrentId}) => {
 }
 
 //  show table
-const Show = ({setCurrentId}) => {
+const Show = ({spendings, setCurrentId}) => {
   const classes = showStyle();
   const dispatch = useDispatch();
-  const spendings = useSelector( (state) => state.spendings );
-  console.log(spendings);
 
-  //  map to array, find amounts
   const amount = spendings.map((s)=>s.amount);
 
   //  total 
