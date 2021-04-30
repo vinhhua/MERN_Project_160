@@ -32,25 +32,18 @@ const App = () => {
       <div className="app">
         <Switch>
           {/* <PrivateRoute exact path="/" component={LoggedInForm} /> */}
-          <Route exact path="/" component={LandingPage} />
-          <Route exact path="/login" component={LoginForm} />
-          <Route exact path="/register" component={RegisterForm} />
-          <Route exact path="/about" component={AboutForm} />
-          <Route exact path="/services" component={ServicesForm} />
-          <Route exact path="/contact-us" component={ContactForm} />
+          <Route exact path="/" component={LandingPage}/>
+          <Route exact path="/login" component={LoginForm}/>
+          <Route exact path="/register" component={RegisterForm}/>
+          <Route exact path="/about" component={AboutForm}/>
+          <Route exact path="/services" component={ServicesForm}/>
+          <Route exact path="/contact-us" component={ContactForm}/>
+          <Route exact path="/forgotpassword" component={ForgotPasswordForm}/>
+          <Route exact path="/passwordreset/:resetToken" component={ResetPasswordForm}/>
           <Provider store={store}>
             <Route exact path="/spending" component={SpendingForm}/>
           </Provider>
-          <Route
-            exact
-            path="/forgotpassword"
-            component={ForgotPasswordForm}
-          />
-          <Route
-            exact
-            path="/passwordreset/:resetToken"
-            component={ResetPasswordForm}
-          />
+          
         </Switch>
       </div>
     </Router>
