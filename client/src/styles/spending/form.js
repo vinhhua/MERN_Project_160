@@ -1,7 +1,6 @@
 //source: https://gist.github.com/adrianhajdin/d99aaa67124f0de7667fd3937715fb26
 
 import { makeStyles } from '@material-ui/core/styles';
-import bg_img from '../../components/images/spend-bg.jpg';
 
 export default makeStyles((theme) => ({
     '& .MuiTextField-root': {

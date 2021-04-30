@@ -1,7 +1,7 @@
 //  import from material-ui
 import { Container, AppBar, Typography, Grow, Grid, Paper,
   Table, TableBody,TableCell, TableContainer, TableHead, TableRow, TextField,
-  IconButton, Button, CircularProgress 
+  IconButton, Button, CircularProgress, CssBaseline 
 } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Close';
 import EditIcon from '@material-ui/icons/Edit';
@@ -70,6 +70,7 @@ const SpendingForm = () => {
 
   return (
     <Container maxWidth="lg">
+      <CssBaseline/>
       <AppBar className={classes.appBar} position="static" color="inherit">
         <Typography className={classes.heading} variant="h2" align="center">
           Spendings

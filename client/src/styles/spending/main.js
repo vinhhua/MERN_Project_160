@@ -1,4 +1,5 @@
 import { makeStyles } from '@material-ui/core/styles';
+import bg_img from '../../components/images/spend-bg.jpg';
 
 export default makeStyles(() => ({
     //  assign styles to tag names in App.js
@@ -16,5 +17,11 @@ export default makeStyles(() => ({
     },
     image: {
       marginLeft: '200px',
+    },
+    container: {
+      minHeight: '100vh',
+      backgroundImage: `url(${bg_img})`,
+      backgroundRepeat: 'no-repeat',
+      backgroundSize: 'cover'
     },
 }));
