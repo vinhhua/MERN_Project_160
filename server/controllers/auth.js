@@ -9,7 +9,7 @@ exports.login = async (req, res, next) => {
 
   // Check if email and password is provided
   if (!email || !password) {
-    return next(new ErrorResponse("Please provide an email and password", 400));
+    return next(new ErrorResponse("Please provide a valid email and password", 400));
   }
 
   try {
@@ -17,14 +17,14 @@ exports.login = async (req, res, next) => {
     const user = await User.findOne({ email }).select("+password");
 
     if (!user) {
-      return next(new ErrorResponse("Invalid credentials", 401));
+      return next(new ErrorResponse("This email does not exist!", 401));
     }
 
     // Check that password match
     const isMatch = await user.matchPassword(password);
 
     if (!isMatch) {
-      return next(new ErrorResponse("Invalid credentials", 401));
+      return next(new ErrorResponse("The username or password is not correct, did you forgot your password?", 401));
     }
 
     sendToken(user, 200, res);
@@ -72,7 +72,8 @@ exports.forgotPassword = async (req, res, next) => {
 
     // HTML Message
     const message = `
-      <h1>A request has been made to change/ recover password for your account</h1>
+      <p>Hi there,
+        A request has been made to change/ recover password for your account</p>
       <a href=${resetUrl} clicktracking=off>${resetUrl}</a>
       <p>If you did not initiate this request, simply ignore this message at this time!</p>
     `;
