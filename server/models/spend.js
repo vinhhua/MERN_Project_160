@@ -8,13 +8,10 @@ const mongoose = require("mongoose");
 
 //  schema creation: name (String), amount (Number), descript (String), date (String)
 const spendSchema = mongoose.Schema({
-    name: String,
+    type: String,
     amount: Number,
     descript: String,
-    date: {
-        type: Date,
-        default: new Date()
-    }
+    date: String,
 }); 
 
 //  create framework model

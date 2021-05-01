@@ -21,10 +21,10 @@ export const LandingPage = () => {
     return (
         <div>
             <Navbar />
-            <video className={classes.video} mute loop autoPlay> 
+            <video className={classes.video} mute="true" loop autoPlay> 
                 <source src={bg_video} type="video/mp4"/>
             </video>
-            <h1 className="h1">Welcome to <span style={{ color: '#ff7961', marginLeft: '10px' }}> Tracker360.</span></h1>
+            <h1 className="h1">Welcome to <span style={{ color: '#ff7961', marginLeft: '10px' }}> Tracker360</span></h1>
             <p className="p">Your data to track. Whenever and wherever.</p>
         </div>
     )
