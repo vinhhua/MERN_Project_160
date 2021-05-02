@@ -21,7 +21,7 @@ import { Provider } from 'react-redux';   //  keep track of store
 import { createStore, applyMiddleware, compose } from 'redux';
 import thunk from 'redux-thunk';  
 import reducers from './reducers';
-import TaskForm from "./components/Form/TaskForm";
+import PostNForm from "./PostNForm";
 
 
 //  global storage
@@ -43,7 +43,7 @@ const App = () => {
           <Route exact path="/passwordreset/:resetToken" component={ResetPasswordForm}/>
           <Provider store={store}>
             <Route exact path="/spending" component={SpendingForm}/>
-            <Route exact path="/todo" component={TaskForm}/>
+            <Route exact path="/todo" component={PostNForm}/>
           </Provider>
           
         </Switch>
