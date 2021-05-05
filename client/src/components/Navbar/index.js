@@ -1,99 +1,51 @@
-import React from 'react'
-import { useState } from 'react'
-import {
-    Nav,
-    NavLink,
-    Bars,
-    NavMenu,
-    NavBtn,
-    NavBtnLink
-  } from './NavbarElements';
+import React, { useState, useEffect } from 'react'
+// import { Nav, NavLink, Bars, NavMenu, NavBtn, NavBtnLink } from './NavbarElements';
+import '../../styles/LandingPage.css';
   
-const Navbar = () => {
+const Navbar = ({show}) => {
+    /*
     const [loggedOut, setLoggedOut] = useState(false)
     const logout = () => {
         localStorage.clear();
         setLoggedOut(true);
     }
-    if (loggedOut) {
-        return (
-            <>
-                <Nav>
-                    <NavLink to="/">
-                        <h1>Logo</h1>
-                    </NavLink>
-                    <Bars />
-                    <NavMenu>
-                        <NavLink to="/about">
-                            <h1>About</h1>
-                        </NavLink>
-                        <NavLink to="/services">
-                            <h1>Services</h1>
-                        </NavLink>
-                        <NavLink to="/contact-us">
-                            <h1>Contact Us</h1>
-                        </NavLink>
-                        <NavLink to="/spending">
-                            <h1>Spending</h1>
-                        </NavLink>
-                        <NavLink to="/todo">
-                            <h1>To Do List</h1>
-                        </NavLink>
-                        <NavLink to="/register">
-                            <h1>Sign Up</h1>
-                        </NavLink>
-                    </NavMenu>
-                    <NavBtn>
-                        <NavBtnLink to="/login">Sign In</NavBtnLink>
-                    </NavBtn>
-                </Nav>
-            </>
-        )
-    }
+    */
+
+    //  visibility useCases = default false
+    const [showAbout, setAbout] = useState(false);    //  about
+    const [showService, setService] = useState(false);    //  service
+    const [showContact, setContact] = useState(false);    //  contact
+
+    useEffect(() => {
+        if(show) {
+            setAbout(false);
+            setService(false);
+            setContact(false);
+        }
+      }, [show])
+
     return (
-        <>
-            <Nav>
-                <NavLink to="/">
-                    <h1>Logo</h1>
-                </NavLink>
-                <Bars />
-                <NavMenu>
-                    <NavLink to="/about">
-                        <h1>About</h1>
-                    </NavLink>
-                    <NavLink to="/services">
-                        <h1>Services</h1>
-                    </NavLink>
-                    <NavLink to="/contact-us">
-                        <h1>Contact Us</h1>
-                    </NavLink>
-                    <NavLink to="/spending">
-                        <h1>Spending</h1>
-                    </NavLink>
-                    <NavLink to="/todo">
-                            <h1>To Do</h1>
-                    </NavLink>
-                    <NavLink to="/register">
-                        <h1>Sign Up</h1>
-                    </NavLink>
-                </NavMenu>
-                <NavBtn>
-                    <button style={{
-                        backgroundColor: "#256ce1",
-                        padding: "10px 22px",
-                        outline: "none",
-                        border: "none",
-                        color: "#fff",
-                        borderRadius: "4px",
-                        cursor: "pointer",
-                        transition: "all 0.2s ease-in-out",
-                        textDecoration: "none"
-                    }}
-                    onClick={logout}>Sign Out</button>
-                </NavBtn>
-            </Nav>
-        </>
+        <div className={ show ? "sidenav active" : "sidenav" }>
+            <ul>
+                <li> <a onClick={() => setAbout(!showAbout)}> ABOUT </a> </li>
+                <p className={showAbout ? "p-tab active" : "p-tab"}> Our application allows 
+                Users to conveniently keep track of their tasks. Make a secure account, 
+                log in, and begin tracking your essentials! </p>
+                <li> <a onClick={() => setService(!showService)}> SERVICES </a> </li>
+                <p className={showService ? "p-tab active" : "p-tab"}> We currently offer
+                ways for you to track you spending, exercise, and projects in one neat
+                application!</p>
+                <li> <a onClick={() => setContact(!showContact)}> CONTACT US </a> </li>
+                <p className={showContact ? "p-tab active" : "p-tab"}> Let us know about your opinions!
+                Contact us at 
+                <span style={{ color: '#008b8b', marginLeft: '10px', marginRight: '10px'}}> 
+                    cs160team11@sjsu.edu </span>
+                for any inquiries.
+                </p>
+            </ul>
+        </div>
     )
+    
 }
 
-export default Navbar
+export default Navbar;
