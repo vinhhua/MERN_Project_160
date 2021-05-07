@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 // import { Nav, NavLink, Bars, NavMenu, NavBtn, NavBtnLink } from './NavbarElements';
 import '../../styles/LandingPage.css';
+import { Link } from 'react-router-dom';
   
 const Navbar = ({show}) => {
     /*
@@ -27,14 +28,15 @@ const Navbar = ({show}) => {
     return (
         <div className={ show ? "sidenav active" : "sidenav" }>
             <ul>
+                <li> <Link style={{color: "white"}}to="/dashboard"> PROFILE</Link></li>
                 <li> <a onClick={() => setAbout(!showAbout)}> ABOUT </a> </li>
                 <p className={showAbout ? "p-tab active" : "p-tab"}> Our application allows 
                 Users to conveniently keep track of their tasks. Make a secure account, 
                 log in, and begin tracking your essentials! </p>
                 <li> <a onClick={() => setService(!showService)}> SERVICES </a> </li>
-                <p className={showService ? "p-tab active" : "p-tab"}> We currently offer
-                ways for you to track you spending, exercise, and projects in one neat
-                application!</p>
+                <p className={showService ? "p-tab active" : "p-tab"}> 
+                    <li><Link style={{color:"white"}} to="/spending">Spending</Link></li>
+                    <li><Link style={{color:"white"}} to="/todo">To Do</Link></li></p>
                 <li> <a onClick={() => setContact(!showContact)}> CONTACT US </a> </li>
                 <p className={showContact ? "p-tab active" : "p-tab"}> Let us know about your opinions!
                 Contact us at 

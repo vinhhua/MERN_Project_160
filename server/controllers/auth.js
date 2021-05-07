@@ -17,14 +17,14 @@ exports.login = async (req, res, next) => {
     const user = await User.findOne({ email }).select("+password");
 
     if (!user) {
-      return next(new ErrorResponse("This email does not exist!", 401));
+      return next(new ErrorResponse("This email does not exist", 401));
     }
 
     // Check that password match
     const isMatch = await user.matchPassword(password);
 
     if (!isMatch) {
-      return next(new ErrorResponse("The username or password is not correct, did you forgot your password?", 401));
+      return next(new ErrorResponse("The username or password is not correct", 401));
     }
 
     sendToken(user, 200, res);

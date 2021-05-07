@@ -29,15 +29,16 @@ const App = () => {
     <Router>
       <div className="app">
         <Switch>
-          {/* <PrivateRoute exact path="/" component={LoggedInForm} /> */}
+          <PrivateRoute exact path="/dashboard" component={LoggedInForm} />
+          <Route exact path="/dashboard" component={LoggedInForm}/>
           <Route exact path="/" component={LandingPage}/>
           <Route exact path="/login" component={LoginForm}/>
           <Route exact path="/register" component={RegisterForm}/>
           <Route exact path="/forgotpassword" component={ForgotPasswordForm}/>
           <Route exact path="/passwordreset/:resetToken" component={ResetPasswordForm}/>
           <Provider store={store}>
-            <Route exact path="/spending" component={SpendingForm}/>
-            <Route exact path="/todo" component={PostNForm}/>
+            <PrivateRoute exact path="/spending" component={SpendingForm}/>
+            <PrivateRoute exact path="/todo" component={PostNForm}/>
           </Provider>
           
         </Switch>

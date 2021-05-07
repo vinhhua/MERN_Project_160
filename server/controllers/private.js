@@ -3,6 +3,6 @@ exports.getPrivateRoute = (req, res, next) => {
     .status(200)
     .json({
       success: true,
-      data: `You have successfully logged in`,
+      data: `Welcome, you have successfully signed in`,
     });
 };

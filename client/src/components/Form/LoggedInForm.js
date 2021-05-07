@@ -1,9 +1,14 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { Link } from 'react-router-dom'
+
 const LoggedInForm = () => {
   const [error, setError] = useState("");
   const [privateData, setPrivateData] = useState("");
 
+  const logOutHandler = () => {
+    localStorage.removeItem("authToken");
+  }
   useEffect(() => {
     const fetchPrivateDate = async () => {
       const config = {
@@ -27,7 +32,12 @@ const LoggedInForm = () => {
   return error ? (
     <span className="error-message">{error}</span>
   ) : (
-    <div>{privateData}</div>
+    <>
+      <div>{privateData}</div>
+      <li><Link to="/spending"> Spending </Link></li>
+      <li><Link to="/todo"> To do </Link></li>
+      <button onClick={logOutHandler}> Log Out </button>
+    </>
   );
 };
 
