@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import bg_video from '../videos/bg-video.mp4';
 import "../../styles/LoginForm.css";
 
 const LoginForm = ({ history }) => {
@@ -43,6 +44,9 @@ const LoginForm = ({ history }) => {
 
   return (
     <div className="login-screen">
+      <video mute="true" loop autoPlay> 
+        <source src={bg_video} type="video/mp4"/>
+      </video>
       <form onSubmit={loginHandler} className="login-screen__form">
         <h3 className="login-screen__title">Login</h3>
         {error && <span className="error-message">{error}</span>}
