@@ -10,7 +10,7 @@ const SpendData = require("../models/spend");
 //  get a Transaction
 exports.getTransaction = async(req, res) => {
     try {
-        const allTransactions = await SpendData.find();      //  find all data asynchronously
+        const allTransactions = await SpendData.find().sort({ date: 1 });      //  find all data asynchronously
         res.status(200).json(allTransactions);          //  response status success: sent
     } catch (error) {
         res.status(404).json({message: error.message});     //  throw error

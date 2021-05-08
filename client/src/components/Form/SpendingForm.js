@@ -1,10 +1,10 @@
 //  import from material-ui
 import { Container, AppBar, Typography, Grow, Grid, Paper,
   Table, TableBody,TableCell, TableContainer, TableHead, TableRow, TextField,
-  IconButton, Button, CircularProgress 
+  IconButton, Button
 } from '@material-ui/core';
 import MenuItem from '@material-ui/core/MenuItem';
-import DeleteIcon from '@material-ui/icons/Close';
+import CloseIcon from '@material-ui/icons/Close';
 import EditIcon from '@material-ui/icons/Edit';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
@@ -14,6 +14,10 @@ import mainStyle from '../../styles/spending/main';
 import formStyle from '../../styles/spending/form';
 import showStyle from '../../styles/spending/show';
 import '../../styles/SpendingForm.css';
+import { ThemeProvider, createMuiTheme } from '@material-ui/core/styles';   //  font
+import ChangeHistoryOutlinedIcon from '@material-ui/icons/ChangeHistoryOutlined';
+import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined';
+import DoubleArrowOutlinedIcon from '@material-ui/icons/DoubleArrowOutlined';
 
 //  import main components, functions
 import React, { useEffect, useState, Component } from 'react';
@@ -21,9 +25,36 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getData, createData, editData, deleteData } from '../../actions/spend';
 import { Line } from 'react-chartjs-2';
 
+//  LOADING!
+import PacmanLoader from 'react-spinners/PacmanLoader';
+import ScaleLoader from 'react-spinners/ScaleLoader';
+
 //
 //  EXPORTED MAIN FORM -----------------------------------------------------------------------------
 const SpendingForm = () => {
+  const theme = createMuiTheme({
+    typography: {
+      fontFamily: [
+        'Source Code Pro',
+        'monospaced',
+      ].join(','),
+    },
+  });
+
+  //  hook loader --------------------------------
+  const [loading, setLoading] = useState(false);
+
+  //  default: run only one time
+  useEffect (() => {
+    setLoading(true);
+    setTimeout(() => {
+    setLoading(false)
+    }, 1500)    //  1.5 seconds
+
+  }, [])
+
+
+  //  currentID ----------------------------------
   const classes = mainStyle();          //  acquire unique styles
   const dispatch = useDispatch();       //  redux dispatch - state acquisitioner
   const [currentId, setCurrentId] = useState(null);     //  currentId - checks edit state
@@ -32,65 +63,140 @@ const SpendingForm = () => {
   useEffect(() => {
     dispatch(getData())
   }, [currentId, dispatch]);
+  
 
+  //  progress  ----------------------------------
+  const [progress, setProgress] = useState(false);
+
+
+  //  data  --------------------------------------
   //  array acquisitions using useSelector()
   const allSpendings = useSelector( (state) => state.spendings );
   const allAmounts = allSpendings.map((s)=>s.amount);
-  const labels = allSpendings.map((s)=>s.date);
+  const allTypes = allSpendings.map((s)=>s.type);
+  const chartLabels = allSpendings.map((s)=>s.date);
 
-  //  CHART CLASS
-  class Chart extends Component {
-    //  constructor
-    constructor(props) {
-      super(props);
-      this.state = {
-        chartData: {
-          labels: labels,
-          datasets:[{ 
-            label: 'Amount Tracking', 
-            data: allAmounts, 
-            fill: false,
-            borderColor: 'rgb(0, 0, 0)',
+  //  min/max
+  const highest = Math.max(...allAmounts);
+  const lowest = Math.abs(Math.min(...allAmounts));
+
+
+  //  LINE CHART
+  const LineChart = () => {
+    return <div>
+      <Line
+        data={{
+          labels: chartLabels,   // plot points
+          datasets: [{
+            label: "Amount",    //  data point
+            data: allAmounts,
+            borderColor: "rgba(255, 255, 255, 0.8)",
+            backgroundColor: "#008b8b",
+            hoverBackgroundColor: "#E0FFFF",
           }]
-        }
-      }
-    }
-
-    //  required call
-    render() {
-      return (
-        <div className="chart">
-          <Line data={this.state.chartData} options={{ maintainAspectRatio: false }}/>
-        </div>
-      )
-    }
+        }}
+        options={{
+          maintainAspectRatio: false,
+        }}
+      />
+    </div>
   }
 
+
   return (
-    <Container className="container" maxWidth="lg">
-      <AppBar className={classes.appBar} position="static" color="inherit">
-        <Typography className={classes.heading} variant="h2" align="center">
-          Spendings
-        </Typography>
-      </AppBar>
-      <Chart />
-      <Grow in>
-        <Container>
-          <Grid container justify="space-between" align="center" alignItems="stretch" spacing={3}>
-            <Grid item xs={12} sm={4}>
-              <Form currentId={currentId} setCurrentId={setCurrentId}/>
-            </Grid>
-            <Grid item xs={12} sm={7}>
-              <Show allSpendings={allSpendings} allAmounts={allAmounts} setCurrentId={setCurrentId}/>
-            </Grid>
-          </Grid>
+    <div className="master">
+      <ThemeProvider theme={theme}>
+        { loading 
+        ? 
+        <PacmanLoader color={"#36D7B7"} loading={loading} size={75} margin={2}/>
+        : (
+        <Container maxWidth="lg">
+          <Button className={classes.info} position="static" color="inherit" variant="outlined" onClick={() => setProgress(!progress)}> 
+            <Typography className={classes.heading} variant="h2"> Spendings </Typography>
+            <div className={ progress ? "rot active" : "rot"}>
+              <DoubleArrowOutlinedIcon style={{ marginLeft: "20px", fontSize: "45px", color: "#008b8b" }}/>
+            </div>
+          </Button>
+          
+          <div className={ progress ? "dropdown active" : "dropdown" } style={{ display: "flex"}}>
+            <div style={{ width: "70%"}}>
+              <Typography className={classes.notif}> 
+                The highest you've earned is <span style={{ color: "#86FB55"}}>+${allTypes.includes('DEPOSIT') ? highest : 0}</span>.
+                Whereas the most you've spent is <span style={{ color: "#FF736F"}}>-${allTypes.includes('WITHDRAW') ? lowest : 0}</span>.
+              </Typography>
+              <LineChart />
+            </div>
+
+            <div style={{ width: "30%"}}>
+              { highest >= lowest ? 
+              <> 
+                <Typography className={classes.notif} component={"span"} style={{ fontSize: "20px", color: "#86FB55"}}>Keep it up, you're in the green!</Typography>
+                <Typography className={classes.notif}>It looks like you're on a steady track. 
+                  Your earnings OUTWEIGH, or at the very least, BALANCES your spendings. Keep up the good work!</Typography>
+              </> :  
+              <> 
+                <Typography className={classes.notif} component={"span"} style={{ fontSize: "20px", color: "#FF736F"}}>You're in the red. Try to ease your spending.</Typography>
+                <Typography className={classes.notif}>Ease your spending! 
+                  Your spending OUTWEIGHS your earnings. Improve your transaction management to see some financial improvement!</Typography>
+              </>
+              }
+            </div>   
+          </div>
+
+          <Container className={classes.forms}>
+            <Summary allAmounts={allAmounts} />
+            <Grow in>
+              <Grid container justify="space-between" align="center" alignItems="stretch" spacing={3}>
+                <Grid item xs={12} sm={4}>
+                  <Form currentId={currentId} setCurrentId={setCurrentId}/>
+                </Grid>
+                <Grid item xs={12} sm={7}>
+                  <Show allSpendings={allSpendings} setCurrentId={setCurrentId}/>
+                </Grid>
+              </Grid> 
+            </Grow> 
+          </Container>
         </Container>
-      </Grow>
-    </Container>
+        )}
+      </ThemeProvider>
+    </div>
   );
 }
 
 //-------------------------------------------------------
+
+//  total
+const Summary = ({allAmounts}) => {
+  const classes = showStyle();
+
+  //  total 
+  const totalSum = allAmounts.reduce((acc, item) => (acc += item), 0).toFixed(2);
+  const expense = Math.abs((allAmounts.filter(item => item < 0).reduce((acc, item) => (acc += item), 0))).toFixed(2);
+  const income = allAmounts.filter(item => item > 0).reduce((acc, item) => (acc += item), 0).toFixed(2);
+
+  return (
+    <TableContainer style={{ marginBottom: "30px" }}component={Paper}>
+          <Table className={classes.table} aria-label="simple table">
+          <TableHead>
+              <TableRow className={classes.row} variant="h1">
+                <TableCell align="center">INCOME</TableCell>
+                <TableCell align="center">TOTAL FUNDS</TableCell>
+                <TableCell align="center">EXPENSE</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              <TableRow style={{ backgroundColor: "black" }}>
+                <TableCell className={classes.inc} align="center">+ $ {income}</TableCell>
+                <TableCell className={totalSum >= 0 ? classes.inc : classes.exp} align="center"> 
+                  { totalSum >= 0 ? '+ $ '+`${totalSum}` : '- $ '+`${Math.abs(totalSum).toFixed(2)}` }
+                </TableCell>
+                <TableCell className={classes.exp} align="center">- $ {expense}</TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+      </TableContainer>
+  );
+}
 
 //  create/edit a transaction
 const Form = ({currentId, setCurrentId}) => {
@@ -104,7 +210,8 @@ const Form = ({currentId, setCurrentId}) => {
     type: 'DEPOSIT',
     amount: 0,
     descript:  ' ',
-    date: new Date().toLocaleDateString()
+    date: new Date().toLocaleDateString('en-US', {
+      month: '2-digit', day: '2-digit', year: 'numeric'})
   });
 
   useEffect(() => {
@@ -118,7 +225,8 @@ const Form = ({currentId, setCurrentId}) => {
     type: 'DEPOSIT',
     amount: 0,
     descript:  ' ',
-    date: new Date().toLocaleDateString() })
+    date: new Date().toLocaleDateString('en-US', {
+      month: '2-digit', day: '2-digit', year: 'numeric'}) })
   }
 
   //  create event handler for spend creation
@@ -168,21 +276,22 @@ const Form = ({currentId, setCurrentId}) => {
     <Paper className={classes.paper}>
       <form className={`${classes.root} ${classes.form}`} noValidate autoComplete="off" onSubmit={handleSubmit}>
         <Typography variant="h6">{ currentId ? 'EDIT TRANSACTION' : 'CREATE TRANSACTION' }</Typography>
-        <TextField select fullWidth className={classes.field} name="type" label="Type" helperText="Enter the type of deposit." variant="outlined" 
+        <TextField select fullWidth className={classes.field} name="type" label="Type" helperText="Enter the transaction type." variant="outlined" 
         value={tData.type} onChange={handleChange}>
           { transactionType.map((option) => (
             <MenuItem key={option.value} value={option.value}>{option.label}</MenuItem>
           ))}
         </TextField>
-        <TextField fullWidth className={classes.field} name="amount" label="Amount" variant="outlined" 
+        <TextField fullWidth className={classes.field} name="amount" label="Amount" helperText="Enter the $ amount." variant="outlined" 
         value={tData.amount} onChange={handleChange}/>
-        <TextField fullWidth className={classes.field} name="descript" label="Description" variant="outlined" 
+        <TextField fullWidth className={classes.field} name="descript" label="Description" helperText="Groceries? Salary? Owe a friend?" variant="outlined" 
         value={tData.descript} onChange={handleChange}/>
         <MuiPickersUtilsProvider utils={DateFnsUtils}>
           <KeyboardDatePicker disableToolbar name="date" variant="inline" format="MM/dd/yyyy" margin="normal" id="date-picker-inline"
               label="Date picker inline"
               value={tData.date}
-              onChange={(event) => setTransaction({...tData, date: new Date(event).toLocaleDateString()})}
+              onChange={(event) => setTransaction({...tData, date: new Date(event).toLocaleDateString('en-US', {
+                month: '2-digit', day: '2-digit', year: 'numeric'})})}
               KeyboardButtonProps={{
                 'aria-label': 'change date',
               }
@@ -200,76 +309,51 @@ const Form = ({currentId, setCurrentId}) => {
 }
 
 //  show table
-const Show = ({allSpendings, allAmounts, setCurrentId}) => {
+const Show = ({allSpendings, setCurrentId}) => {
   const classes = showStyle();
   const dispatch = useDispatch();
 
-  //  total 
-  const totalSum = allAmounts.reduce((acc, item) => (acc += item), 0).toFixed(2);
-  const expense = Math.abs((allAmounts.filter(item => item < 0).reduce((acc, item) => (acc += item), 0))).toFixed(2);
-  const income = allAmounts.filter(item => item > 0).reduce((acc, item) => (acc += item), 0).toFixed(2);
-
-  //  DataGrid columns
-  const columns = [
-    { field: 'name', headerName: 'Transaction', width: 130 },
-    { field: 'amount', headerName: 'Amount', width: 130 },
-    { field: 'descript', headerName: 'Description', width: 130 },
-    { field: 'date', headerName: 'Date', width: 130 },
-  ];
-
   return (
-    !allSpendings.length ? <CircularProgress /> : (
-      <TableContainer component={Paper}>
-        <Table styles={{ padding: '20px' }} className={classes.table} aria-label="simple table">
-        <TableHead>
-            <TableRow variant="h2">
-              <TableCell align="center">INCOME</TableCell>
-              <TableCell align="center">TOTAL FUNDS</TableCell>
-              <TableCell align="center">EXPENSE</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            <TableRow>
-              <TableCell className={classes.inc} align="center">+ $ {income}</TableCell>
-              <TableCell align="center">{ totalSum >= 0 ? '$ '+`${totalSum}` : '- $ '+`${Math.abs(totalSum).toFixed(2)}` }</TableCell>
-              <TableCell className={classes.exp} align="center">- $ {expense}</TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>
-
-        <Table className={classes.table} aria-label="simple table">
-          <TableHead>
-            <TableRow>
-              <TableCell>Transaction</TableCell>
-              <TableCell align="center">Amount</TableCell>
-              <TableCell align="center">Description</TableCell>
-              <TableCell align="center">Date</TableCell>
-              <TableCell align="center"></TableCell>
-              <TableCell align="center"></TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {allSpendings.map((s) => (
-              <TableRow key={s._id} style={{backgroundColor: s.amount >= 0 ? "#00ff0080" : "#ff000080" }} hover={true}>
-                <TableCell component="th" scope="row">{s.type}</TableCell>
-                <TableCell color="#00ff0080" align="center">$ {s.amount}</TableCell>
-                <TableCell align="center">{s.descript}</TableCell>
-                <TableCell align="center">{s.date}</TableCell>
-                <TableCell align="center">
-                  <IconButton aria-label="edit" className={classes.margin} onClick={() => setCurrentId(s._id)}>
-                    <EditIcon />
-                  </IconButton>
-                </TableCell>
-                <TableCell align="center">
-                  <IconButton aria-label="delete" className={classes.margin} onClick={ () => dispatch(deleteData(s._id))}>
-                    <DeleteIcon />
-                  </IconButton>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+    !allSpendings.length 
+      ? <ScaleLoader color={"#36D7B7"} height={35} width={4} radius={2} margin={2}/> 
+    : (
+      <>  
+          <TableContainer component={Paper} style={{ maxHeight: "480px"}}>
+            <Table className={classes.table} stickyHeader aria-label="simple table" >
+              <TableHead >
+                <TableRow className={classes.row}>
+                  <TableCell>Transaction</TableCell>
+                  <TableCell align="center">Amount</TableCell>
+                  <TableCell align="center">Description</TableCell>
+                  <TableCell align="center">Date</TableCell>
+                  <TableCell align="center"><ChangeHistoryOutlinedIcon/></TableCell>
+                  <TableCell align="center"><DeleteOutlineOutlinedIcon/></TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {allSpendings.map((s) => (
+                  <TableRow key={s._id} style={{backgroundColor: s.amount >= 0 ? "#00ff0080" : "#ff000080" }} hover={true}>
+                    <TableCell component="th" scope="row">{s.type}</TableCell>
+                    <TableCell color="#00ff0080" align="center">$ {s.amount}</TableCell>
+                    <TableCell align="center">{s.descript}</TableCell>
+                    <TableCell align="center">{s.date}</TableCell>
+                    <TableCell align="center">
+                      <IconButton aria-label="edit" className={classes.margin} onClick={() => setCurrentId(s._id)}>
+                        <EditIcon />
+                      </IconButton>
+                    </TableCell>
+                    <TableCell align="center">
+                      <IconButton aria-label="delete" className={classes.margin} onClick={ () => dispatch(deleteData(s._id))}>
+                        <CloseIcon />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </>
+        
     )
   );
 }

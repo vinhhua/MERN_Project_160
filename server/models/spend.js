@@ -19,5 +19,3 @@ const SpendData = mongoose.model('spendings', spendSchema);
 
 //  export default spend
 module.exports = SpendData;
-
-
