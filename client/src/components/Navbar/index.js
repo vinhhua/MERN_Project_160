@@ -36,7 +36,9 @@ const Navbar = ({show}) => {
                 <li> <a onClick={() => setService(!showService)}> SERVICES </a> </li>
                 <p className={showService ? "p-tab active" : "p-tab"}> 
                     <li><Link style={{color:"white"}} to="/spending">Spending</Link></li>
-                    <li><Link style={{color:"white"}} to="/todo">To Do</Link></li></p>
+                    <li><Link style={{color:"white"}} to="/exercises">Exercising</Link></li>
+                    <li><Link style={{color:"white"}} to="/todo">To Do</Link></li>
+                </p>
                 <li> <a onClick={() => setContact(!showContact)}> CONTACT US </a> </li>
                 <p className={showContact ? "p-tab active" : "p-tab"}> Let us know about your opinions!
                 Contact us at 

@@ -6,6 +6,7 @@ const errorHandler = require("./middleware/error");
 const authRouter = require("./routes/auth")
 const privateAccessRouter = require("./routes/private")
 const spendRouter = require("./routes/spend") //  add spending
+const exerciseRouter = require("./routes/exercise") //  add exercises
 const postRouter = require("./routes/post") // add post
 const cors = require("cors");
 connectDB();
@@ -21,6 +22,7 @@ app.get("/", (req, res, next) => {
 app.use("/api/auth", authRouter);
 app.use("/api/private", privateAccessRouter);
 app.use("/spend-data", spendRouter);
+app.use("/exercise-data", exerciseRouter);
 app.use("/posts", postRouter)
 
 // Error Handler Middleware

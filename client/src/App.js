@@ -10,6 +10,7 @@ import ForgotPasswordForm from "./components/Form/ForgotPasswordForm";
 import ResetPasswordForm from "./components/Form/ResetPasswordForm";
 import LoggedInForm from "./components/Form/LoggedInForm";
 import SpendingForm from "./components/Form/SpendingForm"
+import ExerciseForm from "./components/Form/ExerciseForm"
 import "./App.css";
 import { LandingPage } from "./components/Form/LandingPage";
 
@@ -37,8 +38,9 @@ const App = () => {
           <Route exact path="/forgotpassword" component={ForgotPasswordForm}/>
           <Route exact path="/passwordreset/:resetToken" component={ResetPasswordForm}/>
           <Provider store={store}>
-            <PrivateRoute exact path="/spending" component={SpendingForm}/>
-            <PrivateRoute exact path="/todo" component={PostNForm}/>
+            <Route exact path="/spending" component={SpendingForm}/>
+            <Route exact path="/exercises" component={ExerciseForm}/>
+            <Route exact path="/todo" component={PostNForm}/>
           </Provider>
           
         </Switch>
