@@ -43,12 +43,12 @@ export const LandingPage = () => {
 
 
         <h1> Welcome to 
-            <span style={{ color: '#008b8b', marginLeft: '25px' }}> 
+            <span style={{ color: '#008b8b', marginLeft: '15px' }}> 
                 Tracker360
             </span>
         </h1>
 
-        <p className="h1-tag"> Your <span style={{ color: '#008b8b', marginLeft: '10px', marginRight: '10px' }}> data </span> 
+        <p className="h1-tag"> Your <span style={{ color: '#008b8b', marginLeft: '6px', marginRight: '6px' }}> data </span> 
         to track. Whenever and wherever. </p>
 
         <div className="button">

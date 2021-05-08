@@ -42,9 +42,9 @@ ul li a:hover{
 
 .p-tab {
     margin-left: 5%;
+    height: 0;
     margin-right: 5%;
     opacity: 0;
-    height: 0;
     transition: opacity 0.5s, margin-top 0.5s;
     overflow: hidden;
 }
@@ -69,7 +69,6 @@ h1 {
     display: flex;
     justify-content: center;
     margin-bottom: 10vh;
-    background-color: black;
     color: white;
 }
 
