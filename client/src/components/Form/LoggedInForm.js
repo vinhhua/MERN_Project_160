@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { Link } from 'react-router-dom'
+import '../../styles/LoggedInForm.css';
 
 const LoggedInForm = () => {
   const [error, setError] = useState("");
@@ -33,10 +34,13 @@ const LoggedInForm = () => {
     <span className="error-message">{error}</span>
   ) : (
     <>
-      <div>{privateData}</div>
-      <li><Link to="/spending"> Spending </Link></li>
-      <li><Link to="/todo"> To do </Link></li>
-      <button onClick={logOutHandler}> Log Out </button>
+      <ul className="dashboard">
+        <li><Link to="/spending"> Track Spending </Link></li>
+        <li><Link to="/todo"> Task Management </Link></li>
+        <li><Link to="/exercises"> Track Exercises </Link></li>
+        <button onClick={logOutHandler}> Log Out </button>
+      </ul>
+      
     </>
   );
 };

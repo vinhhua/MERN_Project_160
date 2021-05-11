@@ -1,0 +1,35 @@
+.dashboard ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color:black;
+    position: fixed;
+    top: 0;
+    width: 100%;
+  }
+
+.dashboard {
+    font: black;
+}
+.dashboard li {
+    float: left;
+  }
+  
+.dashboard button {
+    float: right;
+    padding: 10px;
+    margin: 10px;
+}
+
+.dashboard li a {
+    display: block;
+    color:black;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+  }
+  
+.dashboard li a:hover {
+    background-color: lightblue;
+  }
