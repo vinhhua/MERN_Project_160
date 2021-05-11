@@ -1,5 +1,5 @@
 //  import from material-ui
-import { Container, AppBar, Typography, Grow, Grid, Paper,
+import { Container, Typography, Grow, Grid, Paper,
   Table, TableBody,TableCell, TableContainer, TableHead, TableRow, TextField,
   IconButton, Button
 } from '@material-ui/core';
@@ -20,7 +20,7 @@ import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined'
 import DoubleArrowOutlinedIcon from '@material-ui/icons/DoubleArrowOutlined';
 
 //  import main components, functions
-import React, { useEffect, useState, Component } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getData, createData, editData, deleteData } from '../../actions/spend';
 import { Line } from 'react-chartjs-2';
@@ -97,6 +97,21 @@ const SpendingForm = () => {
         }}
         options={{
           maintainAspectRatio: false,
+          legend: {
+            fontColor: "white",
+          },
+          scales: {
+            xAxes: [{
+              ticks: {
+                  fontColor: "white",
+              }
+            }],
+            yAxes: [{
+              ticks: {
+                  fontColor: "white",
+              }
+            }]
+          } 
         }}
       />
     </div>
@@ -203,7 +218,11 @@ const Form = ({currentId, setCurrentId}) => {
   const classes = formStyle();
   const dispatch = useDispatch();
 
+  //  get singular id
   const idSpending = useSelector((state) => currentId ? state.spendings.find((s) => s._id === currentId) : null);
+
+  //  get user
+  const user = JSON.parse(localStorage.getItem('profile'));
 
   //  react hook: updates data in fields for front-end
   const [tData, setTransaction] = useState({

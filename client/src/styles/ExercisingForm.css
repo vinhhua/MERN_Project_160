@@ -1,0 +1,33 @@
+@import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital@1&display=swap');
+
+.master{
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100vh;
+    background-color: black;
+}
+
+.dropdown {
+    height: 0;
+    opacity: 0;
+    transition: opacity 0.5s;
+    overflow: hidden;
+}
+
+.dropdown.active {
+    height: auto;
+    opacity: 1;
+}
+
+.rot {
+    transition: transform 0.5s, margin-left 0.5s;
+    margin-left: 0%;
+}
+
+.rot.active {
+    transform: rotate(450deg);
+    margin-left: 10%;
+}

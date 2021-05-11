@@ -5,6 +5,7 @@ const { protect } = require("../middleware/auth");
 
 router.route("/").get(protect, getPrivateRoute);
 router.route("/spending").get(protect, getPrivateRoute)
+router.route("/exercise").get(protect, getPrivateRoute)
 router.route("/todo").get(protect, getPrivateRoute)
 
 module.exports = router;
