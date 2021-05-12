@@ -3,6 +3,9 @@ const ErrorResponse = require("../utils/errorResponse");
 const User = require("../models/User");
 const sendEmail = require("../utils/sendEmail");
 
+const jwt = require("jsonwebtoken");
+
+
 // @desc    Login user
 exports.login = async (req, res, next) => {
   const { email, password } = req.body;
@@ -27,7 +30,10 @@ exports.login = async (req, res, next) => {
       return next(new ErrorResponse("The username or password is not correct", 401));
     }
 
-    sendToken(user, 200, res);
+    //  impart token & return
+    const token = jwt.sign({ email: user.email, id: user._id }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRE });
+    res.status(200).json({ result: user, token });
+
   } catch (err) {
     next(err);
   }
@@ -44,7 +50,9 @@ exports.register = async (req, res, next) => {
       password,
     });
 
-    sendToken(user, 200, res);
+    //  impart token & return
+    const token = jwt.sign({ email: user.email, id: user._id }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRE });
+    res.status(200).json({ result: user, token });
   } catch (err) {
     next(err);
   }

@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-// import { Nav, NavLink, Bars, NavMenu, NavBtn, NavBtnLink } from './NavbarElements';
 import '../../styles/LandingPage.css';
 import { Link } from 'react-router-dom';
   
