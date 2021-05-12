@@ -1,7 +1,7 @@
 //  import from material-ui
-import { Container, AppBar, Typography, Grow, Grid, Paper,
+import { Container, Typography, Grow, Grid, Paper,
     Table, TableBody,TableCell, TableContainer, TableHead, TableRow, TextField,
-    IconButton, Button, CircularProgress 
+    IconButton, Button, 
   } from "@material-ui/core";
 import MenuItem from "@material-ui/core/MenuItem";
 import DeleteIcon from "@material-ui/icons/Close";
@@ -19,9 +19,10 @@ import ChangeHistoryOutlinedIcon from "@material-ui/icons/ChangeHistoryOutlined"
 import DeleteOutlineOutlinedIcon from "@material-ui/icons/DeleteOutlineOutlined";
 import DoubleArrowOutlinedIcon from "@material-ui/icons/DoubleArrowOutlined";
 import ScaleLoader from "react-spinners/ScaleLoader";
+import ClimbingBoxLoader from "react-spinners/ClimbingBoxLoader";
 
 //  import main components, functions
-import React, { useEffect, useState, Component } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getData, createData, editData, deleteData } from "../../actions/exercise";
 import { Polar, Doughnut } from "react-chartjs-2";
@@ -29,6 +30,21 @@ import { Polar, Doughnut } from "react-chartjs-2";
 //
 //  EXPORTED MAIN FORM -----------------------------------------------------------------------------
 const ExerciseForm = () => {
+  //  hook loader --------------------------------
+  const classes = mainStyle();          //  acquire unique styles
+  const dispatch = useDispatch();       //  redux dispatch - state acquisitioner
+  const [currentId, setCurrentId] = useState(null);     //  currentId - checks edit state
+
+  const [loading, setLoading] = useState(false);
+  //  default: run only one time
+  useEffect (() => {
+    setLoading(true);
+    setTimeout(() => {
+    setLoading(false)
+    }, 1500)    //  1.5 seconds
+
+  }, [])
+
   const theme = createMuiTheme({
     typography: {
       fontFamily: [
@@ -38,27 +54,15 @@ const ExerciseForm = () => {
     },
   });
 
-  const classes = mainStyle();          //  acquire unique styles
-  const dispatch = useDispatch();       //  redux dispatch - state acquisitioner
-  const [currentId, setCurrentId] = useState(null);     //  currentId - checks edit state
-
   //  getData and pass into currentId if exists
   useEffect(() => {
     dispatch(getData())
   }, [currentId, dispatch]);
 
+
   //  array acquisitions using useSelector()
   const allExercises = useSelector( (state) => state.exercises );
   const allTimes = allExercises.map((exr)=>exr.time);
-
-  //  select menu: values & labels
-  const exerciseType = [ 
-    { value: "HEAVY", label: "JOG/RUN"},
-    { value: "MEDIUM", label: "PUSH-UPS/SIT-UPS"},
-    { value: "LIGHT", label: "WALK"},
-    { value: "HEAVY", label: "SPORTS"},
-    { value: "LIGHT", label: "STRETCHES"}
-  ]
 
   //  get times based on value
   const jog = allExercises.filter(exr => exr.name === "JOG/RUN").map(t => t.time).reduce((acc, item) => (acc += item), 0).toFixed(2);
@@ -149,33 +153,14 @@ const ExerciseForm = () => {
       }} 
     />
     }
-<<<<<<< Updated upstream
-  
-  
-  
-    return (
-      <div className="master2">
-      <ThemeProvider theme={theme}>
-        <Container className="container" maxWidth="lg">
-          <AppBar className={classes.appBar} position="static" color="inherit">
-            <Typography variant="h2" align="center">  Exercises </Typography>
-          </AppBar>
-          <Chart />
-          <Grow in>
-            <Container>
-              <Grid container justify="space-between" align="center" alignItems="stretch" spacing={3}>
-                <Grid item xs={12} sm={4}>
-                  <Form currentId={currentId} setCurrentId={setCurrentId}/>
-                </Grid>
-                <Grid item xs={12} sm={7}>
-                  <Show allExercises={allExercises} allAmounts={allAmounts} setCurrentId={setCurrentId}/>
-                </Grid>
-=======
     </div> 
   }
 
   return (
     <div className="master">
+    { loading ? <ClimbingBoxLoader color={"#36D7B7"} size={50}/> 
+    :
+    <>
     <ThemeProvider theme={theme}>
       <Container className="container" maxWidth="lg">
         <Button className={classes.info} position="static" color="inherit" variant="outlined" onClick={() => setProgress(!progress)}> 
@@ -191,7 +176,6 @@ const ExerciseForm = () => {
               <Grid item xs={12} sm={4}>
                 <Summary allExercises={allExercises} allTimes={allTimes}/>
                 <Form currentId={currentId} setCurrentId={setCurrentId}/>
->>>>>>> Stashed changes
               </Grid>
               <Grid item xs={12} sm={7}>
                 <Chart />
@@ -202,6 +186,7 @@ const ExerciseForm = () => {
         </Grow>
       </Container>
     </ThemeProvider>
+    </>}
     </div>
   );
 }
@@ -340,7 +325,7 @@ const Form = ({currentId, setCurrentId}) => {
           <KeyboardDatePicker disableToolbar name="date" variant="inline" format="MM/dd/yyyy" margin="normal" id="date-picker-inline"
               label="Date picker inline"
               value={eData.date}
-              onChange={(event) => setExercise({...eData, date: new Date().toLocaleDateString("en-US", {
+              onChange={(event) => setExercise({...eData, date: new Date(event).toLocaleDateString("en-US", {
                 month: "2-digit", day: "2-digit", year: "numeric"})})}
               KeyboardButtonProps={{
                 "aria-label": "change date",

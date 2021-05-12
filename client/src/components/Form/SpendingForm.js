@@ -32,6 +32,12 @@ import ScaleLoader from 'react-spinners/ScaleLoader';
 //
 //  EXPORTED MAIN FORM -----------------------------------------------------------------------------
 const SpendingForm = () => {
+  //  currentID ----------------------------------
+  const classes = mainStyle();          //  acquire unique styles
+  const dispatch = useDispatch();       //  redux dispatch - state acquisitioner
+  const [currentId, setCurrentId] = useState(null);     //  currentId - checks edit state
+  
+  
   const theme = createMuiTheme({
     typography: {
       fontFamily: [
@@ -53,17 +59,10 @@ const SpendingForm = () => {
 
   }, [])
 
-
-  //  currentID ----------------------------------
-  const classes = mainStyle();          //  acquire unique styles
-  const dispatch = useDispatch();       //  redux dispatch - state acquisitioner
-  const [currentId, setCurrentId] = useState(null);     //  currentId - checks edit state
-
   //  getData and pass into currentId if exists
   useEffect(() => {
     dispatch(getData())
   }, [currentId, dispatch]);
-  
 
   //  progress  ----------------------------------
   const [progress, setProgress] = useState(false);
@@ -220,9 +219,6 @@ const Form = ({currentId, setCurrentId}) => {
 
   //  get singular id
   const idSpending = useSelector((state) => currentId ? state.spendings.find((s) => s._id === currentId) : null);
-
-  //  get user
-  const user = JSON.parse(localStorage.getItem('profile'));
 
   //  react hook: updates data in fields for front-end
   const [tData, setTransaction] = useState({
