@@ -11,21 +11,47 @@
 
 .dashboard {
     font: black;
+    position: fixed;
+    display:flex;
+    justify-content: space-between;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    margin-left: 10px;
+
+
 }
+
+.span {
+  width: 50px;
+  height: 50px;
+  background: black;
+}
+
 .dashboard li {
     float: left;
   }
   
-.dashboard button {
-    float: right;
-    padding: 10px;
-    margin: 10px;
+.logout button {
+  position:absolute;
+  top:0;
+  right:0;
+  overflow: hidden;
+  text-align: center;
+  height: 40px;
+  width: 70px;
+  background-color: #256ce1;
+  border-radius: 10px 15px 15px 10px;
+  color: white;
+  font-family: Arial;
 }
 
 .dashboard li a {
     display: block;
-    color:black;
+    color:white;
     text-align: center;
+    background-color: #008b8b;
+    border-radius: 10px 15px 15px 10px;
     padding: 14px 16px;
     text-decoration: none;
   }

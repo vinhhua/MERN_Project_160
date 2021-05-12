@@ -107,7 +107,7 @@ import { Polar, Pie, Doughnut } from "react-chartjs-2";
   
   
     return (
-      <div className="master">
+      <div className="master2">
       <ThemeProvider theme={theme}>
         <Container className="container" maxWidth="lg">
           <AppBar className={classes.appBar} position="static" color="inherit">

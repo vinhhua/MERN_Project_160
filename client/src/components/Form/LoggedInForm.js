@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { Link } from 'react-router-dom'
 import '../../styles/LoggedInForm.css';
+import bg_video from '../videos/bg-video.mp4';
 
 const LoggedInForm = () => {
   const [error, setError] = useState("");
@@ -34,14 +35,24 @@ const LoggedInForm = () => {
     <span className="error-message">{error}</span>
   ) : (
     <>
+    <div>
+      <video mute="true" loop autoPlay> 
+        <source src={bg_video} type="video/mp4"/>
+      </video>
+      <ul className="logout">
+      <button onClick={logOutHandler}> Log Out </button>
+      </ul>
       <ul className="dashboard">
+        <span>
         <li><Link to="/spending"> Track Spending </Link></li>
         <li><Link to="/todo"> Task Management </Link></li>
         <li><Link to="/exercises"> Track Exercises </Link></li>
-        <button onClick={logOutHandler}> Log Out </button>
+        </span>
       </ul>
-      
+    </div>
+
     </>
+    
   );
 };
 
