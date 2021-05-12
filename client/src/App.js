@@ -38,9 +38,9 @@ const App = () => {
           <Route exact path="/forgotpassword" component={ForgotPasswordForm}/>
           <Route exact path="/passwordreset/:resetToken" component={ResetPasswordForm}/>
           <Provider store={store}>
-            <Route exact path="/spending" component={SpendingForm}/>
-            <Route exact path="/exercises" component={ExerciseForm}/>
-            <Route exact path="/todo" component={PostNForm}/>
+            <PrivateRoute exact path="/spending" component={SpendingForm}/>
+            <PrivateRoute exact path="/exercises" component={ExerciseForm}/>
+            <PrivateRoute exact path="/todo" component={PostNForm}/>
           </Provider>
           
         </Switch>
