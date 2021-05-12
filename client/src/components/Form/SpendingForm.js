@@ -123,7 +123,7 @@ const SpendingForm = () => {
       <ThemeProvider theme={theme}>
         { loading 
         ? 
-        <PacmanLoader color={"#36D7B7"} loading={loading} size={75} margin={2}/>
+        <PacmanLoader color={"#36D7B7"} loading={loading} size={75} margin={35}/>
         : (
         <Container maxWidth="lg">
           <Button className={classes.info} position="static" color="inherit" variant="outlined" onClick={() => setProgress(!progress)}> 

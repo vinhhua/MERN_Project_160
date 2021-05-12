@@ -9,6 +9,7 @@
     transition: left 500ms;
     background: black;
     color: white;
+    font-family: 'Source Code Pro', 'monospaced';
     left: -100%;
 }
 
@@ -63,6 +64,7 @@ h1 {
     align-items: center;
     margin-top: 20vh;
     color: white;
+    font-family: 'Source Code Pro', 'monospaced';
 }
 
 .h1-tag {
@@ -70,6 +72,7 @@ h1 {
     justify-content: center;
     margin-bottom: 10vh;
     color: white;
+    font-family: 'Source Code Pro', 'monospaced';
 }
 
 .button {
