@@ -140,5 +140,5 @@ exports.resetPassword = async (req, res, next) => {
 const sendToken = (user, statusCode, res) => {
   //  impart token & return
   const token = jwt.sign({ email: user.email, id: user._id }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRE });
-  res.status(statusCode).json({ result: user, token });
+  res.status(statusCode).json({ success: true, result: user, token });
 };
