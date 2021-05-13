@@ -42,13 +42,11 @@ const LoggedInForm = () => {
       <ul className="logout">
       <button onClick={logOutHandler}> Log Out </button>
       </ul>
-      <ul className="dashboard">
-        <span>
+      <span className="dashboard">
         <li><Link to="/spending"> Track Spending </Link></li>
         <li><Link to="/todo"> Task Management </Link></li>
         <li><Link to="/exercises"> Track Exercises </Link></li>
-        </span>
-      </ul>
+      </span>
     </div>
 
     </>
