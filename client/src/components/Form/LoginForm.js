@@ -4,8 +4,10 @@ import { Link } from "react-router-dom";
 import bg_video from '../videos/bg-video.mp4';
 import "../../styles/LoginForm.css";
 
+import { motion } from 'framer-motion';
+
 //  loading in screen
-import PacmanLoader from 'react-spinners/PacmanLoader';
+import { BreedingRhombusSpinner } from 'react-epic-spinners'
 
 const LoginForm = ({history}) => {
   const [email, setEmail] = useState("");
@@ -59,7 +61,7 @@ const LoginForm = ({history}) => {
   };
 
   return (
-    <div className={ loading ? "loading-screen" : "login-screen" }>
+    <motion.div initial={{ scaleY: 0 }} animate={{ scaleY: 1 }} exit={{ scaleY: 0 }} transition={{ duration: 0.5 }} className={ loading ? "loading-screen" : "login-screen" }>
       { loading ? 
       <div style={{ margin:"50px"}}>
         <div>
@@ -67,8 +69,8 @@ const LoginForm = ({history}) => {
             <span style={{ marginLeft: "25px", color: "#36D7B7" }}>{user?.result?.username}.</span>
           </h1>
         </div>
-        <div> 
-          <PacmanLoader color={"#36D7B7"} size={30} margin={2}/>
+        <div style={{ marginLeft: "40%" }}> 
+          <BreedingRhombusSpinner color={"#36D7B7"} size={150}/>
         </div>
       </div> : 
       <>
@@ -117,7 +119,7 @@ const LoginForm = ({history}) => {
         </span>
       </form>
       </> }
-    </div>
+    </motion.div>
   );
 };
 

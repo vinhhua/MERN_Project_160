@@ -4,6 +4,8 @@ import { Link } from "react-router-dom";
 import bg_video from '../videos/bg-video.mp4';
 import "../../styles/RegisterForm.css";
 
+import { motion } from 'framer-motion';
+
 const RegisterForm = ({ history }) => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
@@ -52,7 +54,7 @@ const RegisterForm = ({ history }) => {
   };
 
   return (
-    <div className="register-screen">
+    <motion.div initial={{ scaleY: 0 }} animate={{ scaleY: 1 }} exit={{ scaleY: 0 }} transition={{ duration: 0.5 }} className="register-screen">
       <video mute="true" loop autoPlay> 
         <source src={bg_video} type="video/mp4"/>
       </video>
@@ -113,7 +115,7 @@ const RegisterForm = ({ history }) => {
           Already have an account? <Link to="/login">Login</Link>
         </span>
       </form>
-    </div>
+    </motion.div>
   );
 };
 

@@ -21,30 +21,34 @@ import thunk from 'redux-thunk';
 import reducers from './reducers';
 import PostNForm from "./PostNForm";
 
+//  Animation between certain page transitions using framer-motion
+import { AnimatePresence } from 'framer-motion';
+
 
 //  global storage
 const store = createStore(reducers, compose(applyMiddleware(thunk)));
 
 const App = () => {
   return (
-    <Router>
-      <div className="app">
-        <Switch>
-          <PrivateRoute exact path="/dashboard" component={LoggedInForm} />
-          <Route exact path="/" component={LandingPage}/>
-          <Route exact path="/login" component={LoginForm}/>
-          <Route exact path="/register" component={RegisterForm}/>
-          <Route exact path="/forgotpassword" component={ForgotPasswordForm}/>
-          <Route exact path="/passwordreset/:resetToken" component={ResetPasswordForm}/>
-          <Provider store={store}>
-            <PrivateRoute exact path="/spending" component={SpendingForm}/>
-            <PrivateRoute exact path="/exercises" component={ExerciseForm}/>
-            <PrivateRoute exact path="/todo" component={PostNForm}/>
-          </Provider>
-          
-        </Switch>
-      </div>
-    </Router>
+    <AnimatePresence exitBeforeEnter>
+      <Router>
+        <div className="app">
+          <Switch>
+            <PrivateRoute exact path="/dashboard" component={LoggedInForm} />
+            <Route exact path="/" component={LandingPage}/>
+            <Route exact path="/login" component={LoginForm}/>
+            <Route exact path="/register" component={RegisterForm}/>
+            <Route exact path="/forgotpassword" component={ForgotPasswordForm}/>
+            <Route exact path="/passwordreset/:resetToken" component={ResetPasswordForm}/>
+            <Provider store={store}>
+              <PrivateRoute exact path="/spending" component={SpendingForm}/>
+              <PrivateRoute exact path="/exercises" component={ExerciseForm}/>
+              <PrivateRoute exact path="/todo" component={PostNForm}/>
+            </Provider> 
+          </Switch>
+        </div>
+      </Router>
+    </AnimatePresence>
   );
 };
 

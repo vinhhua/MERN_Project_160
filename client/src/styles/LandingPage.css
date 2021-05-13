@@ -9,7 +9,7 @@
     transition: left 500ms;
     background: black;
     color: white;
-    font-family: 'Source Code Pro', 'monospaced';
+    font-family: 'Source Code Pro', monospace;
     left: -100%;
 }
 
@@ -64,7 +64,7 @@ h1 {
     align-items: center;
     margin-top: 20vh;
     color: white;
-    font-family: 'Source Code Pro', 'monospaced';
+    font-family: 'Source Code Pro', monospace;
 }
 
 .h1-tag {
@@ -72,12 +72,12 @@ h1 {
     justify-content: center;
     margin-bottom: 10vh;
     color: white;
-    font-family: 'Source Code Pro', 'monospaced';
+    font-family: 'Source Code Pro', monospace;
 }
 
 .button {
-    display: block;
-    text-align: center;
+    color: white;
+    font-family: 'Source Code Pro', monospace;
 }
 
 
@@ -87,4 +87,13 @@ video {
     height: 100%;
     object-fit: cover;
     z-index: -1;
+}
+
+.pause {
+    opacity: 0;
+    transition: 1s opacity 1s;
+}
+
+.pause.active {
+    opacity: 1;
 }

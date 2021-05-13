@@ -26,6 +26,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getData, createData, editData, deleteData } from "../../actions/exercise";
 import { Doughnut, Bar } from "react-chartjs-2";
+import { motion } from "framer-motion";
   
 //
 //  EXPORTED MAIN FORM -----------------------------------------------------------------------------
@@ -161,7 +162,8 @@ const ExerciseForm = () => {
   }
 
   return (
-    <div className="master">
+    <motion.div className="master"
+    initial={{ scaleY: 0 }} animate={{ scaleY: 1 }} exit={{ scaleY: 0 }} transition={{ duration: 0.5 }}>
     { loading ? <ClimbingBoxLoader color={randomColor} size={50}/> 
     :
     <>
@@ -191,7 +193,7 @@ const ExerciseForm = () => {
       </Container>
     </ThemeProvider>
     </>}
-    </div>
+    </motion.div>
   );
 }
 

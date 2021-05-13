@@ -7,6 +7,8 @@ import Form from './components/Form/TaskForm';
 import { getPosts } from './actions/todo';
 import useStyles from './styles/todo/todo';
 
+import { motion } from 'framer-motion';
+
 const PostNForm = () => {
   const [currentId, setCurrentId] = useState(0);
   const dispatch = useDispatch();
@@ -18,6 +20,7 @@ const PostNForm = () => {
 
   return (
     <Container maxWidth="lg">
+      <motion.div initial={{ scaleY: 0 }} animate={{ scaleY: 1 }} exit={{ scaleY: 0 }} transition={{ duration: 0.5 }}>
       <AppBar className={classes.appBar} position="static" color="inherit">
         <Typography className={classes.heading} variant="h2" align="center">To Do List</Typography>
       </AppBar>
@@ -33,6 +36,7 @@ const PostNForm = () => {
           </Grid>
         </Container>
       </Grow>
+    </motion.div>
     </Container>
   );
 };

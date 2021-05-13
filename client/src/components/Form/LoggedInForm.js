@@ -1,8 +1,11 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { Link, useHistory } from 'react-router-dom'
 import '../../styles/LoggedInForm.css';
 import bg_video from '../videos/bg-video.mp4';
+
+//  importing links, routes, and forms
+import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 
 const LoggedInForm = ({history}) => {
   const [error, setError] = useState("");
@@ -38,7 +41,7 @@ const LoggedInForm = ({history}) => {
     <span className="error-message">{error}</span>
   ) : (
     <>
-    <div>
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ opacity: 0.5 }}>
       <video mute="true" loop autoPlay> 
         <source src={bg_video} type="video/mp4"/>
       </video>
@@ -50,7 +53,7 @@ const LoggedInForm = ({history}) => {
         <li><Link to="/todo"> Task Management </Link></li>
         <li><Link to="/exercises"> Track Exercises </Link></li>
       </span>
-    </div>
+    </motion.div>
 
     </>
     

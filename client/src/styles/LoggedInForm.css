@@ -12,7 +12,7 @@
 .dashboard {
     font: black;
     position: fixed;
-    display:flex;
+    display: flex;
     justify-content: space-between;
     top: 50%;
     left: 50%;

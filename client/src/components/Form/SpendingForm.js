@@ -20,13 +20,14 @@ import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined'
 import DoubleArrowOutlinedIcon from '@material-ui/icons/DoubleArrowOutlined';
 
 //  import main components, functions
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getData, createData, editData, deleteData } from '../../actions/spend';
 import { Line } from 'react-chartjs-2';
 
 //  LOADING!
 import ScaleLoader from 'react-spinners/ScaleLoader';
+import { motion } from 'framer-motion';
 
 //
 //  EXPORTED MAIN FORM -----------------------------------------------------------------------------
@@ -45,6 +46,7 @@ const SpendingForm = () => {
     }, 1500)    //  1.5 seconds
 
   }, [])
+  
 
   //  currentID ----------------------------------
   const classes = mainStyle();          //  acquire unique styles
@@ -128,11 +130,15 @@ const SpendingForm = () => {
 
 
   return (
-    <div className="master">
+    <motion.div className="master"
+    initial={{ scaleY: 0 }} animate={{ scaleY: 1 }} exit={{ scaleY: 0 }} transition={{ duration: 0.5 }}>
       <ThemeProvider theme={theme}>
         { loading 
         ? 
-        <h2 className="greeting">{randomGreet}</h2>
+        <div style={{ margin: "40px" }}>
+          <div><h2 className="greeting">{randomGreet}</h2></div>
+          <div><ScaleLoader color={"#36D7B7"} height={50} width={4} margin={10}/></div>
+        </div>
         : (
         <Container maxWidth="lg">
           <Button className={classes.info} position="static" color="inherit" variant="outlined" onClick={() => setProgress(!progress)}> 
@@ -141,6 +147,7 @@ const SpendingForm = () => {
               <DoubleArrowOutlinedIcon style={{ marginLeft: "20px", fontSize: "7em", color: "#008b8b" }}/>
             </div>
           </Button>
+          
           
           <div className={ progress ? "dropdown active" : "dropdown" } style={{ display: "flex"}}>
             <div style={{ width: "70%"}}>
@@ -183,7 +190,7 @@ const SpendingForm = () => {
         </Container>
         )}
       </ThemeProvider>
-    </div>
+    </motion.div>
   );
 }
 
