@@ -25,11 +25,14 @@ import ClimbingBoxLoader from "react-spinners/ClimbingBoxLoader";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getData, createData, editData, deleteData } from "../../actions/exercise";
-import { Polar, Doughnut } from "react-chartjs-2";
+import { Doughnut, Bar } from "react-chartjs-2";
   
 //
 //  EXPORTED MAIN FORM -----------------------------------------------------------------------------
 const ExerciseForm = () => {
+  //  acquire user
+  const user = JSON.parse(localStorage.getItem("authToken"));
+
   //  hook loader --------------------------------
   const classes = mainStyle();          //  acquire unique styles
   const dispatch = useDispatch();       //  redux dispatch - state acquisitioner
@@ -61,7 +64,7 @@ const ExerciseForm = () => {
 
 
   //  array acquisitions using useSelector()
-  const allExercises = useSelector( (state) => state.exercises );
+  const allExercises = useSelector((state) => state.exercises).filter(e => e.creator === user?.result?._id);
   const allTimes = allExercises.map((exr)=>exr.time);
 
   //  get times based on value
@@ -74,10 +77,23 @@ const ExerciseForm = () => {
   //  progress  ----------------------------------
   const [progress, setProgress] = useState(false);
 
+  //  select menu: values & labels
+  const exerciseType = [ 
+    { value: "HEAVY", label: "JOG/RUN", color: "rgb(255, 99, 132)"},
+    { value: "MEDIUM", label: "PUSH-UPS/SIT-UPS", color: "rgb(75, 192, 192)"},
+    { value: "LIGHT", label: "WALK", color: "rgb(255, 205, 86)"},
+    { value: "HEAVY", label: "SPORTS", color: "rgb(211, 142, 246)"},
+    { value: "LIGHT", label: "STRETCHES", color: "rgb(54, 162, 235)"}
+  ]
+
+  //  map list of colors randomly - for loading screen
+  const bgColors = exerciseType.map(e => e.color);
+  const randomColor = bgColors[Math.floor(Math.random() * bgColors.length)];    //  choose element
+
   //  POLAR AREA CHART
   const Chart = () => {
     return <div>
-      { progress ? <Doughnut
+      { progress ? <Bar
         data={{
           labels: [
             "Jog/Run",
@@ -89,18 +105,12 @@ const ExerciseForm = () => {
           datasets: [{
             label: "Duration",    //  data point
             data: [jog, ups, walk, sports, stretches],
-            backgroundColor: [
-              "rgb(255, 99, 132)",
-              "rgb(75, 192, 192)",
-              "rgb(255, 205, 86)",
-              "rgb(201, 203, 207)",
-              "rgb(54, 162, 235)"
-            ],
+            backgroundColor: bgColors,
             hoverBackgroundColor: [
               "rgb(215, 59, 92)",
               "rgb(35, 152, 152)",
               "rgb(215, 165, 46)",
-              "rgb(161, 163, 167)",
+              "rgb(171, 102, 206)",
               "rgb(14, 122, 195)"
             ],
             fontColor: "rgb(255, 255, 255)",
@@ -115,7 +125,7 @@ const ExerciseForm = () => {
         }}
       />
       :
-      <Polar
+      <Doughnut
       data={{
         labels: [
           "Jog/Run",
@@ -127,18 +137,12 @@ const ExerciseForm = () => {
         datasets: [{
           label: "Duration",    //  data point
           data: [jog, ups, walk, sports, stretches],
-          backgroundColor: [
-            "rgb(255, 99, 132)",
-            "rgb(75, 192, 192)",
-            "rgb(255, 205, 86)",
-            "rgb(201, 203, 207)",
-            "rgb(54, 162, 235)"
-          ],
+          backgroundColor: bgColors,
           hoverBackgroundColor: [
             "rgb(215, 59, 92)",
             "rgb(35, 152, 152)",
             "rgb(215, 165, 46)",
-            "rgb(161, 163, 167)",
+            "rgb(171, 102, 206)",
             "rgb(14, 122, 195)"
           ],
           fontColor: "rgb(255, 255, 255)",
@@ -158,13 +162,13 @@ const ExerciseForm = () => {
 
   return (
     <div className="master">
-    { loading ? <ClimbingBoxLoader color={"#36D7B7"} size={50}/> 
+    { loading ? <ClimbingBoxLoader color={randomColor} size={50}/> 
     :
     <>
     <ThemeProvider theme={theme}>
       <Container className="container" maxWidth="lg">
         <Button className={classes.info} position="static" color="inherit" variant="outlined" onClick={() => setProgress(!progress)}> 
-          <Typography className={classes.heading} variant="h2"> Exercises </Typography>
+          <Typography className={classes.heading} variant="h2"> {user?.result?.username}'s Exercises </Typography>
           <div className={ progress ? "rot active" : "rot"}>
             <DoubleArrowOutlinedIcon style={{ fontSize: "7em", color: "#008b8b" }}/>
           </div>
@@ -174,12 +178,12 @@ const ExerciseForm = () => {
           <Container>
             <Grid container justify="space-between" align="center" alignItems="stretch" spacing={2}>
               <Grid item xs={12} sm={4}>
-                <Summary allExercises={allExercises} allTimes={allTimes}/>
-                <Form currentId={currentId} setCurrentId={setCurrentId}/>
+                <Summary allExercises={allExercises} allTimes={allTimes} exerciseType={exerciseType}/>
+                <Form user={user} currentId={currentId} setCurrentId={setCurrentId} exerciseType={exerciseType}/>
               </Grid>
               <Grid item xs={12} sm={7}>
                 <Chart />
-                <Show allExercises={allExercises} setCurrentId={setCurrentId}/>
+                <Show allExercises={allExercises} setCurrentId={setCurrentId} exerciseType={exerciseType} bgColors={bgColors}/>
               </Grid>
             </Grid>
           </Container>
@@ -234,12 +238,9 @@ const Summary = ({allExercises, allTimes}) => {
 }
 
 //  create/edit a transaction
-const Form = ({currentId, setCurrentId}) => {
+const Form = ({user, currentId, setCurrentId, exerciseType}) => {
   const classes = formStyle();
   const dispatch = useDispatch();
-
-  //  acquire one specific exercise id
-  const idExercise = useSelector((state) => currentId ? state.exercises.find((exr) => exr._id === currentId) : null);
 
   //  react hook: updates data in fields for front-end
   const [eData, setExercise] = useState({
@@ -250,10 +251,6 @@ const Form = ({currentId, setCurrentId}) => {
     date: new Date().toLocaleDateString("en-US", {
       month: "2-digit", day: "2-digit", year: "numeric"})
   });
-
-  useEffect(() => {
-    if(idExercise) setExercise(idExercise);
-  }, [idExercise])
 
   //  clear input
   const clear = (event) => {
@@ -267,6 +264,12 @@ const Form = ({currentId, setCurrentId}) => {
       month: "2-digit", day: "2-digit", year: "numeric"}) })
   }
 
+  //  acquire one specific exercise id
+  const idExercise = useSelector((state) => currentId ? state.exercises.find((exr) => exr._id === currentId) : null);
+  useEffect(() => {
+    if(idExercise) setExercise(idExercise);
+  }, [idExercise])
+
   //  create event handler for spend creation
   const handleSubmit = (e) => {
     //  prevent refresh
@@ -277,9 +280,9 @@ const Form = ({currentId, setCurrentId}) => {
 
     //  if id is not empty, patch. otherwise, post
     if(currentId) { 
-      dispatch(editData(currentId, eData)); 
+      dispatch(editData(currentId, {...eData, creator: user?.result?._id})); 
     }
-    else { dispatch(createData(eData)); }
+    else { dispatch(createData({...eData, creator: user?.result?._id})); }
 
     clear();
   }
@@ -296,15 +299,6 @@ const Form = ({currentId, setCurrentId}) => {
       }
     })
   }
-
-  //  select menu: values & labels
-  const exerciseType = [ 
-    { value: "HEAVY", label: "JOG/RUN"},
-    { value: "MEDIUM", label: "PUSH-UPS/SIT-UPS"},
-    { value: "LIGHT", label: "WALK"},
-    { value: "HEAVY", label: "SPORTS"},
-    { value: "LIGHT", label: "STRETCHES"}
-  ]
 
   return (
     <>
@@ -345,7 +339,7 @@ const Form = ({currentId, setCurrentId}) => {
 
 
 //  show table
-const Show = ({allExercises, setCurrentId}) => {
+const Show = ({allExercises, setCurrentId, exerciseType, bgColors}) => {
   const classes = showStyle();
   const dispatch = useDispatch();
 
@@ -367,7 +361,7 @@ const Show = ({allExercises, setCurrentId}) => {
           </TableHead>
           <TableBody>
             {allExercises.map((exr) => (
-              <TableRow key={exr._id} className={classes.row}>
+              <TableRow key={exr._id} style={{ backgroundColor: bgColors[exerciseType.findIndex(ev => ev.label === exr.name)] }}>
                 <TableCell component="th" scope="row">{exr.name}</TableCell>
                 <TableCell align="center">{exr.time} min.</TableCell>
                 <TableCell align="center">{exr.descript}</TableCell>

@@ -8,6 +8,7 @@ const mongoose = require("mongoose");
 
 //  schema creation: name (String), amount (Number), descript (String), date (String)
 const exerciseSchema = mongoose.Schema({
+    creator: String,
     type: String,
     name: String,
     time: Number,
