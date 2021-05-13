@@ -26,29 +26,16 @@ import { getData, createData, editData, deleteData } from '../../actions/spend';
 import { Line } from 'react-chartjs-2';
 
 //  LOADING!
-import PacmanLoader from 'react-spinners/PacmanLoader';
 import ScaleLoader from 'react-spinners/ScaleLoader';
 
 //
 //  EXPORTED MAIN FORM -----------------------------------------------------------------------------
 const SpendingForm = () => {
-  //  currentID ----------------------------------
-  const classes = mainStyle();          //  acquire unique styles
-  const dispatch = useDispatch();       //  redux dispatch - state acquisitioner
-  const [currentId, setCurrentId] = useState(null);     //  currentId - checks edit state
-  
-  
-  const theme = createMuiTheme({
-    typography: {
-      fontFamily: [
-        'Source Code Pro',
-        'monospaced',
-      ].join(','),
-    },
-  });
+  //  acquire user
+  const user = JSON.parse(localStorage.getItem("authToken"));
 
   //  hook loader --------------------------------
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);    //  default: false
 
   //  default: run only one time
   useEffect (() => {
@@ -59,19 +46,28 @@ const SpendingForm = () => {
 
   }, [])
 
-  //  getData and pass into currentId if exists
-  useEffect(() => {
-    dispatch(getData())
-  }, [currentId, dispatch]);
+  //  currentID ----------------------------------
+  const classes = mainStyle();          //  acquire unique styles
+  const dispatch = useDispatch();       //  redux dispatch - state acquisitioner
+  const [currentId, setCurrentId] = useState(null);     //  currentId - checks edit state
+  
+  const theme = createMuiTheme({
+    typography: {
+      fontFamily: [
+        'Source Code Pro',
+        'monospace',
+      ].join(','),
+    },
+  });
 
   //  progress  ----------------------------------
   const [progress, setProgress] = useState(false);
 
-
   //  data  --------------------------------------
-  //  array acquisitions using useSelector()
-  const allSpendings = useSelector( (state) => state.spendings );
-  const allAmounts = allSpendings.map((s)=>s.amount);
+  //  array acquisitions using useSelector() & filtering of data
+  const allSpendings = useSelector((state) => state.spendings).filter(u => u.creator === user?.result?._id);
+
+  const allAmounts = allSpendings.map((s)=>s.amount);  
   const allTypes = allSpendings.map((s)=>s.type);
   const chartLabels = allSpendings.map((s)=>s.date);
 
@@ -79,6 +75,20 @@ const SpendingForm = () => {
   const highest = Math.max(...allAmounts);
   const lowest = Math.abs(Math.min(...allAmounts));
 
+  //  random quotes: https://stackoverflow.com/questions/42211863/pick-a-random-item-from-a-javascript-array
+  const greetings = [
+    "Never spend your money before you have earned it.  - Thomas Jefferson",
+    "Don't spend it all in one place.",
+    "Another day, another something spent.",
+    "So, how much did you spend today?",
+    "I've got nothing. Loading you in.",
+    "You come here a lot, huh?" ]
+  const randomGreet = greetings[Math.floor(Math.random() * greetings.length)];    //  choose element
+
+  //  getData and pass into currentId if exists
+  useEffect(() => {
+    dispatch(getData())
+  }, [currentId, dispatch]);
 
   //  LINE CHART
   const LineChart = () => {
@@ -122,13 +132,13 @@ const SpendingForm = () => {
       <ThemeProvider theme={theme}>
         { loading 
         ? 
-        <PacmanLoader color={"#36D7B7"} loading={loading} size={75} margin={35}/>
+        <h2 className="greeting">{randomGreet}</h2>
         : (
         <Container maxWidth="lg">
           <Button className={classes.info} position="static" color="inherit" variant="outlined" onClick={() => setProgress(!progress)}> 
-            <Typography className={classes.heading} variant="h2"> Spendings </Typography>
+            <Typography className={classes.heading} variant="h2">{user?.result?.username}'s Spendings </Typography>
             <div className={ progress ? "rot active" : "rot"}>
-              <DoubleArrowOutlinedIcon style={{ marginLeft: "20px", fontSize: "45px", color: "#008b8b" }}/>
+              <DoubleArrowOutlinedIcon style={{ marginLeft: "20px", fontSize: "7em", color: "#008b8b" }}/>
             </div>
           </Button>
           
@@ -162,7 +172,7 @@ const SpendingForm = () => {
             <Grow in>
               <Grid container justify="space-between" align="center" alignItems="stretch" spacing={3}>
                 <Grid item xs={12} sm={4}>
-                  <Form currentId={currentId} setCurrentId={setCurrentId}/>
+                  <Form user={user} currentId={currentId} setCurrentId={setCurrentId}/>
                 </Grid>
                 <Grid item xs={12} sm={7}>
                   <Show allSpendings={allSpendings} setCurrentId={setCurrentId}/>
@@ -213,7 +223,7 @@ const Summary = ({allAmounts}) => {
 }
 
 //  create/edit a transaction
-const Form = ({currentId, setCurrentId}) => {
+const Form = ({user, currentId, setCurrentId}) => {
   const classes = formStyle();
   const dispatch = useDispatch();
 
@@ -258,10 +268,8 @@ const Form = ({currentId, setCurrentId}) => {
     }
 
     //  if id is not empty, patch. otherwise, post
-    if(currentId) { 
-      dispatch(editData(currentId, tData)); 
-    }
-    else { dispatch(createData(tData)); }
+    if(currentId) { dispatch(editData(currentId, {...tData, creator: user?.result?._id})); }
+    else { dispatch(createData({...tData, creator: user?.result?._id})); }
 
     clear();
   }

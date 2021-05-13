@@ -10,6 +10,12 @@
     background-color: black;
 }
 
+.greeting{
+    font-size: 2em;
+    color: white;
+    font-family: "Source Code Pro", monospace;
+}
+
 .dropdown {
     height: 0;
     opacity: 0;
@@ -23,11 +29,9 @@
 }
 
 .rot {
-    transition: transform 0.5s, margin-left 0.5s;
-    margin-left: 0%;
+    transition: transform 0.5s;
 }
 
 .rot.active {
     transform: rotate(450deg);
-    margin-left: 10%;
 }
