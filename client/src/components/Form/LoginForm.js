@@ -1,23 +1,40 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import bg_video from '../videos/bg-video.mp4';
 import "../../styles/LoginForm.css";
 
-const LoginForm = ({ history }) => {
+//  loading in screen
+import PacmanLoader from 'react-spinners/PacmanLoader';
+
+const LoginForm = ({history}) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
+  //  LOAD  ------------------------------------
+  let initial = useRef(true);   //  avoid initial render (dupe variable)
+  const [loading, setLoading] = useState(false);    //  default false
+  const user = JSON.parse(localStorage.getItem("authToken"));   //  null or populated
+
+  //  react hook: loading screen transition
   useEffect(() => {
-    if (localStorage.getItem("authToken")) {
-      history.push("/dashboard");
+    if(initial.current) {
+      initial.current = false;   
+    } else {
+      setTimeout(() => {
+        setLoading(false);
+        if(localStorage.getItem("authToken")) {
+          history.push("/dashboard");
+        }
+      }, 2000);   //  2 seconds
     }
-  }, [history]);
+  }, [loading])
+
+  //  ------------------------------------------
 
   const loginHandler = async (e) => {
     e.preventDefault();
-
     const config = {
       header: {
         "Content-Type": "application/json",
@@ -32,8 +49,7 @@ const LoginForm = ({ history }) => {
       );
 
       localStorage.setItem("authToken", JSON.stringify(data));
-
-      history.push("/");
+      setLoading(true);
     } catch (error) {
       setError(error.response.data.error);
       setTimeout(() => {
@@ -43,7 +59,19 @@ const LoginForm = ({ history }) => {
   };
 
   return (
-    <div className="login-screen">
+    <div className={ loading ? "loading-screen" : "login-screen" }>
+      { loading ? 
+      <div style={{ margin:"50px"}}>
+        <div>
+          <h1 className="loading-words">Welcome back
+            <span style={{ marginLeft: "25px", color: "#36D7B7" }}>{user?.result?.username}.</span>
+          </h1>
+        </div>
+        <div> 
+          <PacmanLoader color={"#36D7B7"} size={30} margin={2}/>
+        </div>
+      </div> : 
+      <>
       <video mute="true" loop autoPlay> 
         <source src={bg_video} type="video/mp4"/>
       </video>
@@ -88,6 +116,7 @@ const LoginForm = ({ history }) => {
           Don't have an account? <Link to="/register">Register</Link>
         </span>
       </form>
+      </> }
     </div>
   );
 };

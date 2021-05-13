@@ -1,16 +1,19 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { Link } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
 import '../../styles/LoggedInForm.css';
 import bg_video from '../videos/bg-video.mp4';
 
-const LoggedInForm = () => {
+const LoggedInForm = ({history}) => {
   const [error, setError] = useState("");
   const [privateData, setPrivateData] = useState("");
 
+  //  clear local storage and push to home page
   const logOutHandler = () => {
-    localStorage.removeItem("authToken");
+    localStorage.clear();
+    history.push('/');
   }
+
   useEffect(() => {
     const fetchPrivateDate = async () => {
       const config = {
