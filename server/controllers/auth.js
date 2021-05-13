@@ -2,7 +2,6 @@ const crypto = require("crypto");
 const ErrorResponse = require("../utils/errorResponse");
 const User = require("../models/User");
 const sendEmail = require("../utils/sendEmail");
-
 const jwt = require("jsonwebtoken");
 
 
@@ -30,10 +29,7 @@ exports.login = async (req, res, next) => {
       return next(new ErrorResponse("The username or password is not correct", 401));
     }
 
-    //  impart token & return
-    const token = jwt.sign({ email: user.email, id: user._id }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRE });
-    res.status(200).json({ result: user, token });
-
+    sendToken(user, 200, res);
   } catch (err) {
     next(err);
   }
@@ -50,9 +46,7 @@ exports.register = async (req, res, next) => {
       password,
     });
 
-    //  impart token & return
-    const token = jwt.sign({ email: user.email, id: user._id }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRE });
-    res.status(200).json({ result: user, token });
+    sendToken(user, 200, res);
   } catch (err) {
     next(err);
   }
@@ -144,6 +138,7 @@ exports.resetPassword = async (req, res, next) => {
 };
 
 const sendToken = (user, statusCode, res) => {
-  const token = user.getSignedJwtToken();
-  res.status(statusCode).json({ sucess: true, token });
+  //  impart token & return
+  const token = jwt.sign({ email: user.email, id: user._id }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRE });
+  res.status(statusCode).json({ result: user, token });
 };

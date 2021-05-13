@@ -40,7 +40,7 @@ const RegisterForm = ({ history }) => {
         config
       );
 
-      localStorage.setItem("authToken", data.token);
+      localStorage.setItem("authToken", JSON.stringify(data));    //  convert object to string
 
       history.push("/");
     } catch (error) {
