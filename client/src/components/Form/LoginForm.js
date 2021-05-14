@@ -61,7 +61,8 @@ const LoginForm = ({history}) => {
   };
 
   return (
-    <motion.div initial={{ scaleY: 0 }} animate={{ scaleY: 1 }} exit={{ scaleY: 0 }} transition={{ duration: 0.5 }} className={ loading ? "loading-screen" : "login-screen" }>
+    <motion.div className={ loading ? "loading-screen" : "login-screen" }
+    initial={{ scaleY: 0 }} animate={{ scaleY: 1 }} exit={{ scaleY: 0 }} transition={{ duration: 0.5 }}>
       { loading ? 
       <div style={{ margin:"50px"}}>
         <div>
